@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import {useState } from 'react';
+import { Dimensions, StyleSheet } from 'react-native';
 import {
   View,
   ImageBackground,
-  Image,
+
   TouchableOpacity,
   TextInput,
   Text,
@@ -12,80 +13,184 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import {
-  container,
-  bgContainer,
-  contentWrapper,
-  keyboardView,
-  title,
-  input,
-  inputLast,
-  passWrapper,
-  btnPassShow,
-  btnPassShowText,
-  btn,
-  btnText,
-  link,
-  linkText,
-  linkTextUnderline,
-} from '../AuthPagesStyles';
 import backgroundImg from '../../../assets/img/background.jpg';
 
 const LoginScreen = () => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+   const [currentFocused, setCurrentFocused] = useState('');
 
-  const handleFocus = () => {
+  const handleFocus = (currentFocusInput = '') => {
     setIsShowKeyboard(true);
+    setCurrentFocused(currentFocusInput);
   };
+
   const handleKeyboardHide = () => {
     setIsShowKeyboard(false);
+    setCurrentFocused('');
     Keyboard.dismiss();
   };
 
   return (
     <TouchableWithoutFeedback onPress={handleKeyboardHide}>
-      <View style={container}>
-        <ImageBackground source={backgroundImg} style={bgContainer}>
-          <View style={contentWrapper}>
-            <KeyboardAvoidingView
+      <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={keyboardView}
-            >
-              <Text style={title}>Увійти</Text>
+             style={styles.keyboardView}
+            > 
+        <ImageBackground source={backgroundImg} style={styles.bgContainer}>
+           <View style={styles.contentWrapper}>
+            
+              <Text style={styles.title}>Увійти</Text>
               <TextInput
-                style={{ ...input }}
-                placeholder="Адреса електронної пошти"
-                onFocus={handleFocus}
+                style={{
+                  ...styles.input,
+                  backgroundColor: currentFocused === 'email' ? '#ffffff' : '#f6f6f6',
+                  borderColor: currentFocused === 'email' ? '#ff6c00' : '#e8e8e8',
+                }}
+              placeholder="Адреса електронної пошти"
+              placeholderTextColor="#bdbdbd"
+              autoComplete="email"
+              autoCapitalize="none"
+              onFocus={() => handleFocus('email')}
               />
-              <View style={{ ...passWrapper, marginBottom: isShowKeyboard ? 323 : 43 }}>
+             <View
+              style={{
+                ...styles.passWrapper,
+                marginBottom: isShowKeyboard ? 310 : 43,
+              }}>
                 <TextInput
-                  style={{ ...input, ...inputLast }}
-                  placeholder="Пароль"
-                  onFocus={handleFocus}
+                  style={{
+                  ...styles.input,
+                  ...styles.inputLast,
+
+                  backgroundColor: currentFocused === 'password' ? '#ffffff' : '#f6f6f6',
+                  borderColor: currentFocused === 'password' ? '#ff6c00' : '#e8e8e8',
+                }}
+                placeholder="Пароль"
+                placeholderTextColor="#bdbdbd"
+                autoComplete="password"
+                autoCapitalize="none"
+                onFocus={() => handleFocus('password')}
                 />
-                <TouchableOpacity style={btnPassShow}>
-                  <Text style={btnPassShowText}>Показати</Text>
+                <TouchableOpacity style={styles.btnPassShow}>
+                  <Text style={styles.btnPassShowText}>Показати</Text>
                 </TouchableOpacity>
               </View>
-            </KeyboardAvoidingView>
+            
 
             {!isShowKeyboard && (
               <View>
-                <TouchableOpacity style={btn}>
-                  <Text style={btnText}>Увійти</Text>
+                <TouchableOpacity style={styles.btn}>
+                  <Text style={styles.btnText}>Увійти</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={link}>
-                  <Text style={linkText}>
-                    Немає акаунту? <Text style={linkTextUnderline}>Зареєструватися</Text>
+                <TouchableOpacity style={styles.link}>
+                  <Text style={styles.linkText}>
+                    Немає акаунту? <Text style={styles.linkTextUnderline}>Зареєструватися</Text>
                   </Text>
                 </TouchableOpacity>
               </View>
             )}
           </View>
         </ImageBackground>
-      </View>
+        </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
 
 export default LoginScreen;
+
+const styles = StyleSheet.create({
+  keyboardView: {
+    flex: 1,
+    // justifyContent: 'flex-end'
+  },
+
+  bgContainer: {
+    width: '100%',
+    height: '100%',
+
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+
+    resizeMode: 'cover',
+    justifyContent: 'center',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+
+  contentWrapper: {
+    paddingHorizontal: 16,
+
+    width: '100%',
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  title: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    fontSize: 30,
+    lineHeight: 35,
+    textAlign: 'center',
+
+    marginTop: 32,
+    marginBottom: 32,
+    color: '#212121',
+  },
+  input: {
+    height: 50,
+    fontSize: 16,
+    padding: 16,
+    marginBottom: 16,
+
+    color: '#212121',
+    backgroundColor: '#f6f6f6',
+
+    borderWidth: 1,
+    borderColor: '#e8e8e8',
+    borderRadius: 8,
+  },
+  inputLast: {
+    marginBottom: 0,
+  },
+  passWrapper: {
+    marginBottom: 43,
+  },
+  btnPassShow: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    alignSelf: 'center',
+
+    padding: 16,
+
+    backgroundColor: 'transparent',
+  },
+  btnPassShowText: {
+    color: '#1B4371',
+  },
+
+  btn: {
+    alignItems: 'center',
+    padding: 16,
+
+    backgroundColor: '#ff6c00',
+    borderRadius: 100,
+  },
+  btnText: {
+    color: '#ffffff',
+  },
+
+  link: {
+    alignItems: 'center',
+
+    marginTop: 16,
+    marginBottom: 111,
+  },
+  linkText: {
+    color: '#1B4371',
+  },
+  linkTextUnderline: {
+    textDecorationLine: 'underline',
+  },
+});
