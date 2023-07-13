@@ -22,5 +22,5 @@
 - [Макет компонента `LoginScreen` з відкритою клавіатурою](<https://www.figma.com/file/YqWLNarVE4x1zkXa6PYJfi/Homework-(Copy)-(Copy)?node-id=33-126&t=p8npyqW8trmwF8rr-0>).
 
 
-#### Результат
- 
+
+
