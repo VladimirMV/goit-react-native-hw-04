@@ -1,9 +1,8 @@
 import {useState } from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import {  StyleSheet } from 'react-native';
 import {
   View,
   ImageBackground,
-
   TouchableOpacity,
   TextInput,
   Text,
@@ -13,39 +12,35 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import backgroundImg from '../../../assets/img/background.jpg';
+import backgroundImg from '../assets/img/background.jpg';
 
 const LoginScreen = () => {
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
    const [currentFocused, setCurrentFocused] = useState('');
-
+  const keyboardVerticalOffset = 200;
   const handleFocus = (currentFocusInput = '') => {
-    setIsShowKeyboard(true);
+ 
     setCurrentFocused(currentFocusInput);
   };
 
   const handleKeyboardHide = () => {
-    setIsShowKeyboard(false);
     setCurrentFocused('');
     Keyboard.dismiss();
   };
 
   return (
     <TouchableWithoutFeedback onPress={handleKeyboardHide}>
+       <ImageBackground source={backgroundImg} style={styles.bgContainer}>
       <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-             style={styles.keyboardView}
+          style={styles.keyboardView}
+          keyboardVerticalOffset = {keyboardVerticalOffset}
             > 
-        <ImageBackground source={backgroundImg} style={styles.bgContainer}>
+       
            <View style={styles.contentWrapper}>
             
               <Text style={styles.title}>Увійти</Text>
               <TextInput
-                style={{
-                  ...styles.input,
-                  backgroundColor: currentFocused === 'email' ? '#ffffff' : '#f6f6f6',
-                  borderColor: currentFocused === 'email' ? '#ff6c00' : '#e8e8e8',
-                }}
+                 style={[styles.input, currentFocused === 'email' && styles.inputFocused]}
               placeholder="Адреса електронної пошти"
               placeholderTextColor="#bdbdbd"
               autoComplete="email"
@@ -53,18 +48,9 @@ const LoginScreen = () => {
               onFocus={() => handleFocus('email')}
               />
              <View
-              style={{
-                ...styles.passWrapper,
-                marginBottom: isShowKeyboard ? 310 : 43,
-              }}>
+              style={styles.passWrapper}>
                 <TextInput
-                  style={{
-                  ...styles.input,
-                  ...styles.inputLast,
-
-                  backgroundColor: currentFocused === 'password' ? '#ffffff' : '#f6f6f6',
-                  borderColor: currentFocused === 'password' ? '#ff6c00' : '#e8e8e8',
-                }}
+                  style={[styles.input, currentFocused === 'password' && styles.inputFocused]}
                 placeholder="Пароль"
                 placeholderTextColor="#bdbdbd"
                 autoComplete="password"
@@ -77,7 +63,7 @@ const LoginScreen = () => {
               </View>
             
 
-            {!isShowKeyboard && (
+        
               <View>
                 <TouchableOpacity style={styles.btn}>
                   <Text style={styles.btnText}>Увійти</Text>
@@ -88,10 +74,11 @@ const LoginScreen = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
-            )}
+          
           </View>
-        </ImageBackground>
+        
         </KeyboardAvoidingView>
+        </ImageBackground>
     </TouchableWithoutFeedback>
   );
 };
@@ -99,22 +86,22 @@ const LoginScreen = () => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  keyboardView: {
+ keyboardView: {
     flex: 1,
-    // justifyContent: 'flex-end'
-  },
+    justifyContent: "flex-end",
+    width: '100%',
+  
+},
 
   bgContainer: {
+     flex: 1,
     width: '100%',
-    height: '100%',
 
     flexDirection: 'row',
     alignItems: 'flex-end',
 
     resizeMode: 'cover',
     justifyContent: 'center',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
   },
 
   contentWrapper: {

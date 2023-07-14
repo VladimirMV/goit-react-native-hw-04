@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import {
   View,
@@ -15,24 +15,21 @@ import {
 } from 'react-native';
 
 ;
-import backgroundImg from '../../../assets/img/background.jpg';
-import SvgAddButton from '../../../assets/svg/SvgAddButton';
+import backgroundImg from '../assets/img/background.jpg';
+import { AntDesign } from '@expo/vector-icons';
 
 
 
 const RegistrationScreen = () => {
 
    const [avatar, setAvatar] = useState(null);
-   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
    const [currentFocused, setCurrentFocused] = useState('');
-
+   const keyboardVerticalOffset = -200;
    const handleFocus = (currentFocusInput = '') => {
-    setIsShowKeyboard(true);
     setCurrentFocused(currentFocusInput);
   };
 
   const handleKeyboardHide = () => {
-    setIsShowKeyboard(false);
     setCurrentFocused('');
     Keyboard.dismiss();
   };
@@ -49,11 +46,13 @@ const RegistrationScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={handleKeyboardHide}>
+      <ImageBackground source={backgroundImg} style={styles.bgContainer}>
       <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+           keyboardVerticalOffset = {keyboardVerticalOffset}
               style={styles.keyboardView}
             >
-      <ImageBackground source={backgroundImg} style={styles.bgContainer}>
+      
           <View style={styles.contentWrapper}>
             <View style={styles.avatarWrapper}>
               <Image style={styles.avatar} source={avatar} />
@@ -61,19 +60,15 @@ const RegistrationScreen = () => {
                 style={avatar ? styles.btnAddAvatarLoad : styles.btnAddAvatar}
                 onPress={onLoadAvatar}
               >
-                <SvgAddButton
-                  style={avatar ? styles.btnAddAvatarSvgLoad : styles.btnAddAvatarSvg}
+                <AntDesign name="pluscircleo" size={25} color={avatar ? '#e8e8e8' : '#ff6c00'}
+                backgroundColor={'transparent'} fill={'#bdbdbd'}        
                 />
               </TouchableOpacity>
             </View> 
             <Text style={{ ...styles.title, marginTop: 92 }}>Реєстрація</Text>
             
-            <TextInput 
-              style={{
-                ...styles.input,
-                backgroundColor: currentFocused === 'login' ? '#ffffff' : '#f6f6f6',
-                borderColor: currentFocused === 'login' ? '#ff6c00' : '#e8e8e8',
-              }}
+            <TextInput
+              style={[styles.input, currentFocused === 'login' && styles.inputFocused]}
               placeholder="Логін"
               placeholderTextColor="#bdbdbd"
               autoComplete="username"
@@ -81,11 +76,7 @@ const RegistrationScreen = () => {
               onFocus={() => handleFocus('login')}
             />
               <TextInput
-              style={{
-                ...styles.input,
-                backgroundColor: currentFocused === 'email' ? '#ffffff' : '#f6f6f6',
-                borderColor: currentFocused === 'email' ? '#ff6c00' : '#e8e8e8',
-              }}
+              style={[styles.input, currentFocused === 'email' && styles.inputFocused]}
               placeholder="Адреса електронної пошти"
               placeholderTextColor="#bdbdbd"
               autoComplete="email"
@@ -93,19 +84,10 @@ const RegistrationScreen = () => {
                onFocus={() => handleFocus('email')}
               />
               <View
-              style={{
-                ...styles.passWrapper,
-                marginBottom: isShowKeyboard ? 300 : 43,
-              }}
+              style={styles.passWrapper}
             >
                 <TextInput
-                 style={{
-                  ...styles.input,
-                  // ...styles.inputLast,
-
-                  backgroundColor: currentFocused === 'password' ? '#ffffff' : '#f6f6f6',
-                  borderColor: currentFocused === 'password' ? '#ff6c00' : '#e8e8e8',
-                }}
+                style={[styles.input, currentFocused === 'password' && styles.inputFocused]}
                 placeholder="Пароль"
                 placeholderTextColor="#bdbdbd"
                 autoComplete="password"
@@ -117,8 +99,7 @@ const RegistrationScreen = () => {
                 </TouchableOpacity>
               </View>
             
-
-            {!isShowKeyboard && (
+ 
               <View>
                 <TouchableOpacity style={styles.btn}>
                   <Text style={styles.btnText}>Зареєструватися</Text>
@@ -129,10 +110,10 @@ const RegistrationScreen = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
-            )}
+            
           </View>
-        </ImageBackground>
         </KeyboardAvoidingView>
+        </ImageBackground>
     </TouchableWithoutFeedback>
   );
 };
@@ -141,19 +122,21 @@ export default RegistrationScreen;
 const styles = StyleSheet.create({
   keyboardView: {
     flex: 1,
-  },
+    justifyContent: "flex-end",
+    width: '100%',
+  
+},
+
 
   bgContainer: {
+     flex: 1,
     width: '100%',
-    height: '100%',
 
     flexDirection: 'row',
     alignItems: 'flex-end',
 
     resizeMode: 'cover',
     justifyContent: 'center',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
   },
 
   contentWrapper: {
@@ -164,6 +147,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
+
   title: {
     fontFamily: 'Roboto',
     fontStyle: 'normal',
@@ -189,11 +173,16 @@ const styles = StyleSheet.create({
     borderColor: '#e8e8e8',
     borderRadius: 8,
   },
+  inputFocused:{
+    backgroundColor:'#ffffff',
+    borderColor: '#ff6c00'
+  },
+  
   inputLast: {
     marginBottom: 0,
   },
   passWrapper: {
-    marginBottom: 43,
+    marginBottom: 40,
   },
   btnPassShow: {
     position: 'absolute',
@@ -282,14 +271,5 @@ const styles = StyleSheet.create({
 
     transform: [{ rotate: '45deg' }],
   },
-  btnAddAvatarSvg: {
-    fill: '#ff6c00',
-    stroke: '#ff6c00',
-    backgroundColor: '#ffffff',
-  },
-  btnAddAvatarSvgLoad: {
-    fill: '#bdbdbd',
-    stroke: '#e8e8e8',
-    backgroundColor: '#ffffff',
-  },
+  
 });
