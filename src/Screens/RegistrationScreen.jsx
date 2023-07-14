@@ -23,8 +23,9 @@ import { AntDesign } from '@expo/vector-icons';
 const RegistrationScreen = () => {
 
    const [avatar, setAvatar] = useState(null);
-   const [currentFocused, setCurrentFocused] = useState('');
-   const keyboardVerticalOffset = -200;
+  const [currentFocused, setCurrentFocused] = useState('');
+  const [isSecureText, setIsSecureText] = useState(true);
+   const keyboardVerticalOffset = -160;
    const handleFocus = (currentFocusInput = '') => {
     setCurrentFocused(currentFocusInput);
   };
@@ -92,6 +93,8 @@ const RegistrationScreen = () => {
                 placeholderTextColor="#bdbdbd"
                 autoComplete="password"
                 autoCapitalize="none"
+                secureTextEntry={isSecureText}
+                 
                   onFocus={() => handleFocus('password')}
                 />
                 <TouchableOpacity style={styles.btnPassShow}>
@@ -122,9 +125,8 @@ export default RegistrationScreen;
 const styles = StyleSheet.create({
   keyboardView: {
     flex: 1,
-    justifyContent: "flex-end",
     width: '100%',
-  
+  justifyContent: "flex-end"
 },
 
 
@@ -132,11 +134,6 @@ const styles = StyleSheet.create({
      flex: 1,
     width: '100%',
 
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-
-    resizeMode: 'cover',
-    justifyContent: 'center',
   },
 
   contentWrapper: {

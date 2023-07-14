@@ -15,8 +15,9 @@ import {
 import backgroundImg from '../assets/img/background.jpg';
 
 const LoginScreen = () => {
-   const [currentFocused, setCurrentFocused] = useState('');
-  const keyboardVerticalOffset = 200;
+  const [currentFocused, setCurrentFocused] = useState('');
+  const [isSecureText, setIsSecureText] = useState(true);
+  const keyboardVerticalOffset = -220;
   const handleFocus = (currentFocusInput = '') => {
  
     setCurrentFocused(currentFocusInput);
@@ -56,6 +57,7 @@ const LoginScreen = () => {
                 autoComplete="password"
                 autoCapitalize="none"
                 onFocus={() => handleFocus('password')}
+                secureTextEntry={isSecureText}
                 />
                 <TouchableOpacity style={styles.btnPassShow}>
                   <Text style={styles.btnPassShowText}>Показати</Text>
@@ -89,24 +91,16 @@ const styles = StyleSheet.create({
  keyboardView: {
     flex: 1,
     justifyContent: "flex-end",
-    width: '100%',
-  
 },
 
   bgContainer: {
      flex: 1,
     width: '100%',
-
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-
-    resizeMode: 'cover',
-    justifyContent: 'center',
+   resizeMode: 'cover',
   },
 
   contentWrapper: {
     paddingHorizontal: 16,
-
     width: '100%',
     backgroundColor: '#fff',
     borderTopLeftRadius: 25,
@@ -139,6 +133,10 @@ const styles = StyleSheet.create({
   },
   inputLast: {
     marginBottom: 0,
+  },
+  inputFocused:{
+    backgroundColor:'#ffffff',
+    borderColor: '#ff6c00'
   },
   passWrapper: {
     marginBottom: 43,
