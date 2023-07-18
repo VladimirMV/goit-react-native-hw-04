@@ -22,10 +22,30 @@ import { AntDesign } from '@expo/vector-icons';
 
 const RegistrationScreen = () => {
 
-   const [avatar, setAvatar] = useState(null);
+  const [avatar, setAvatar] = useState(null);
+  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const [currentFocused, setCurrentFocused] = useState('');
   const [isSecureText, setIsSecureText] = useState(true);
-   const keyboardVerticalOffset = -160;
+  const keyboardVerticalOffset = -160;
+  
+  const clearUserForm = () => {
+    setLogin('');
+    setEmail('');
+    setPassword('');
+  };
+
+  const onSubmitUserRegister = () => {
+    if (!login || !email || !password) return console.warn('Заповніть поля');
+
+    console.log({ login, email, password, avatar });
+
+    handleKeyboardHide();
+    clearUserForm();
+  };
+
    const handleFocus = (currentFocusInput = '') => {
     setCurrentFocused(currentFocusInput);
   };
@@ -74,6 +94,8 @@ const RegistrationScreen = () => {
               placeholderTextColor="#bdbdbd"
               autoComplete="username"
               autoCapitalize="none"
+              value={login}
+              onChangeText={setLogin}
               onFocus={() => handleFocus('login')}
             />
               <TextInput
@@ -82,6 +104,8 @@ const RegistrationScreen = () => {
               placeholderTextColor="#bdbdbd"
               autoComplete="email"
               autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
                onFocus={() => handleFocus('email')}
               />
               <View
@@ -94,17 +118,21 @@ const RegistrationScreen = () => {
                 autoComplete="password"
                 autoCapitalize="none"
                 secureTextEntry={isSecureText}
-                 
+                value={password}
+                onChangeText={setPassword}
                   onFocus={() => handleFocus('password')}
                 />
-                <TouchableOpacity style={styles.btnPassShow}>
-                  <Text style={styles.btnPassShowText}>Показати</Text>
-                </TouchableOpacity>
+                 <TouchableOpacity
+                style={styles.btnPassShow}
+                onPress={() => password !== '' && setIsSecureText(prevState => !prevState)}
+              >
+                <Text style={styles.btnPassShowText}>Показати</Text>
+              </TouchableOpacity>
               </View>
             
  
               <View>
-                <TouchableOpacity style={styles.btn}>
+                <TouchableOpacity style={styles.btn} onPress={onSubmitUserRegister}>
                   <Text style={styles.btnText}>Зареєструватися</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.link}>

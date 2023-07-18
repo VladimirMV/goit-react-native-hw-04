@@ -15,12 +15,26 @@ import {
 import backgroundImg from '../assets/img/background.jpg';
 
 const LoginScreen = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [currentFocused, setCurrentFocused] = useState('');
   const [isSecureText, setIsSecureText] = useState(true);
   const keyboardVerticalOffset = -220;
+
+  const clearUserForm = () => {
+    setEmail('');
+    setPassword('');
+  };
+    const onSubmitUserRegister = () => {
+    if (!email.trim() || !password.trim()) return console.warn('Заповніть поля');
+
+    console.log({ email, password });
+
+    handleKeyboardHide();
+    clearUserForm();
+  };
   const handleFocus = (currentFocusInput = '') => {
- 
-    setCurrentFocused(currentFocusInput);
+  setCurrentFocused(currentFocusInput);
   };
 
   const handleKeyboardHide = () => {
@@ -46,6 +60,8 @@ const LoginScreen = () => {
               placeholderTextColor="#bdbdbd"
               autoComplete="email"
               autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
               onFocus={() => handleFocus('email')}
               />
              <View
@@ -57,17 +73,24 @@ const LoginScreen = () => {
                 autoComplete="password"
                 autoCapitalize="none"
                 onFocus={() => handleFocus('password')}
+                value={password}
+                onChangeText={setPassword}
                 secureTextEntry={isSecureText}
-                />
-                <TouchableOpacity style={styles.btnPassShow}>
-                  <Text style={styles.btnPassShowText}>Показати</Text>
-                </TouchableOpacity>
+              />
+              
+               <TouchableOpacity
+                style={styles.btnPassShow}
+                onPress={() => password !== '' && setIsSecureText(prevState => !prevState)}
+              >
+                <Text style={styles.btnPassShowText}>Показати</Text>
+              </TouchableOpacity>
+
               </View>
             
 
         
               <View>
-                <TouchableOpacity style={styles.btn}>
+                <TouchableOpacity style={styles.btn} onPress={onSubmitUserRegister}>
                   <Text style={styles.btnText}>Увійти</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.link}>
