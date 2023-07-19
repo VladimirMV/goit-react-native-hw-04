@@ -43,8 +43,8 @@ const LoginScreen = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handleKeyboardHide}>
-       <ImageBackground source={backgroundImg} style={styles.bgContainer}>
+     <ImageBackground source={backgroundImg} style={styles.bgContainer}>
+     <TouchableWithoutFeedback onPress={handleKeyboardHide}> 
       <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.keyboardView}
@@ -102,9 +102,9 @@ const LoginScreen = () => {
           
           </View>
         
-        </KeyboardAvoidingView>
-        </ImageBackground>
-    </TouchableWithoutFeedback>
+        </KeyboardAvoidingView> 
+      </TouchableWithoutFeedback>
+       </ImageBackground>
   );
 };
 
@@ -136,9 +136,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     lineHeight: 35,
     textAlign: 'center',
-
-    marginTop: 32,
-    marginBottom: 32,
+    marginVertical:32,
     color: '#212121',
   },
   input: {

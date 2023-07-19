@@ -66,8 +66,8 @@ const RegistrationScreen = () => {
 
 
   return (
+    <ImageBackground source={backgroundImg} style={styles.bgContainer}>
     <TouchableWithoutFeedback onPress={handleKeyboardHide}>
-      <ImageBackground source={backgroundImg} style={styles.bgContainer}>
       <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
            keyboardVerticalOffset = {keyboardVerticalOffset}
@@ -86,7 +86,7 @@ const RegistrationScreen = () => {
                 />
               </TouchableOpacity>
             </View> 
-            <Text style={{ ...styles.title, marginTop: 92 }}>Реєстрація</Text>
+            <Text style={styles.title}>Реєстрація</Text>
             
             <TextInput
               style={[styles.input, currentFocused === 'login' && styles.inputFocused]}
@@ -144,8 +144,9 @@ const RegistrationScreen = () => {
             
           </View>
         </KeyboardAvoidingView>
-        </ImageBackground>
+       
     </TouchableWithoutFeedback>
+     </ImageBackground>
   );
 };
 
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     lineHeight: 35,
     textAlign: 'center',
 
-    marginTop: 32,
+    marginTop: 92,
     marginBottom: 32,
     color: '#212121',
   },
