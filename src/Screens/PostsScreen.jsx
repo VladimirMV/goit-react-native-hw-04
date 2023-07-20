@@ -3,6 +3,7 @@ import {  StyleSheet } from 'react-native';
 import { Text, View } from 'react-native';
 
 const PostScreen = () => {
+  console.log("PostScreen сработал")
   return (
     <View style={styles.container}>
       <Text style={{ ...styles.title, marginTop: 22 }}>Публікацїі</Text>
