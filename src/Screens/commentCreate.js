@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
+
+import * as MediaLibrary from "expo-media-library";
+import { Camera } from "expo-camera";
+import * as Location from "expo-location";
+
 import {
   Dimensions,
   Image,
@@ -11,66 +17,72 @@ import {
   Text,
   View,
 } from "react-native";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
-import * as MediaLibrary from "expo-media-library";
-import { Camera } from "expo-camera";
-import * as Location from "expo-location";
+
 import SvgTrash from "../assets/svg/SvgTrash";
 import SvgLocation from "../assets/svg/SvgLocation";
 import SvgLoadPost from "../assets/svg/SvgLoadPost";
 
 const CreatePostsScreen = () => {
-  // Hooks and state variables for managing the component's behavior
+  // Инициализация хуков для управления навигацией и фокусом экрана
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const cameraRef = useRef(null);
 
-  const [hasPermission, setHasPermission] = useState(null);
-  const [postImg, setPostImg] = useState("");
-  const [postName, setPostName] = useState("");
-  const [postAddress, setPostAddress] = useState("");
-  const [postLocation, setPostLocation] = useState(null);
-  const [currentFocused, setCurrentFocused] = useState("");
-  const keyboardVerticalOffset = 150;
+  // Состояния компонента
+  const [hasPermission, setHasPermission] = useState(null); // Состояние разрешения на использование камеры
+  const [cameraRef, setCameraRef] = useState(null); // Ссылка на компонент камеры
 
-  // useEffect hook to handle component initialization
+  const [postImg, setPostImg] = useState(""); // Ссылка на изображение, которое будет опубликовано
+  const [postName, setPostName] = useState(""); // Название поста
+  const [postAddress, setPostAddress] = useState(""); // Адрес поста
+  const [postLocation, setPostLocation] = useState(null); // Геолокационные координаты поста
+
+  const [currentFocused, setCurrentFocused] = useState(""); // Хранит информацию о текущем активном поле ввода
+  const keyboardVerticalOffset = 150; // Отступ клавиатуры от элемента с фокусом в пикселях
+
+  // Эффект, выполняемый при первой загрузке компонента
   useEffect(() => {
-    // Function to request camera, media library, and location permissions
-    const getPermissions = async () => {
-      const { status: cameraStatus } =
-        await Camera.requestCameraPermissionsAsync();
-      await MediaLibrary.requestPermissionsAsync();
-
-      setHasPermission(cameraStatus === "granted");
-
-      const { status: locationStatus } =
-        await Location.requestForegroundPermissionsAsync();
-      if (locationStatus !== "granted") {
-        console.log("Permission to access location was denied");
-      }
-    };
-
-    // Clear the form and get permissions when the component mounts
+    // Инициализация состояния разрешения на использование камеры
     setPostImg("");
     setPostLocation(null);
-    getPermissions();
+
+    // Запрос разрешения использования камеры и медиабиблиотеки
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setHasPermission(status === "granted");
+    })();
+
+    // Запрос разрешения доступа к геолокации
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+    })();
   }, []);
 
-  // Function to add image location using Expo Location API
+  // Функция для добавления геолокации и адреса по текущему местоположению
   const addImageLocation = async () => {
+    // Получение текущих геолокационных координат
     const location = await Location.getCurrentPositionAsync({});
     const coords = {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     };
 
-    const [address] = await Location.reverseGeocodeAsync(coords);
+    // Получение адреса по текущим геолокационным координатам
+    const [address] = await Location.reverseGeocodeAsync({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    });
 
+    // Установка состояний с адресом и геолокацией
     setPostAddress(address.city);
     setPostLocation(coords);
   };
 
-  // Function to clear form input fields
+  // Функция для очистки формы
   const clearForm = () => {
     setPostImg("");
     setPostName("");
@@ -78,69 +90,75 @@ const CreatePostsScreen = () => {
     setPostLocation(null);
   };
 
-  // Function to handle post submission
+  // Функция, вызываемая при попытке опубликовать пост
   const onSubmitPost = () => {
-    if (!postImg || !postName || !postLocation) {
-      console.warn("Upload a photo and all the fields");
-      return;
-    }
+    // Проверка на заполнение всех обязательных полей
+    if (!postImg || !postName || !postLocation)
+      return console.warn("Завантажте фото та заповніть поля");
 
+    // Отладочный вывод информации о посте
     console.log({ postImg, postName, postAddress, postLocation });
 
+    // Закрытие клавиатуры и переход на другой экран с передачей данных о посте
     handleKeyboardHide();
-    navigation.navigate("{PostScreen", {
+    navigation.navigate("DefaultPosts", {
       postImg,
       postName: postName.trim(),
       postAddress: postAddress.trim(),
       postLocation,
     });
-    console.log({ postImg, postName, postAddress, postLocation });
     clearForm();
   };
 
-  // Function to load the post image from the camera
+  // Функция для загрузки изображения поста
   const onLoadPostImg = async () => {
-    if (cameraRef.current) {
+    // Если есть ссылка на компонент камеры
+    if (cameraRef) {
       try {
-        const { uri } = await cameraRef.current.takePictureAsync();
+        // Сделать снимок с камеры и получить ссылку на изображение
+        const { uri } = await cameraRef.takePictureAsync();
+        // Создание медиа-ресурса из полученного изображения
         await MediaLibrary.createAssetAsync(uri);
+        // Установка ссылки на изображение в состояние компонента
         setPostImg(uri);
       } catch (error) {
         console.log("Error > ", error.message);
       }
     }
+    // Добавление геолокации и адреса по текущему местоположению
     addImageLocation();
   };
 
-  // Function to handle input focus and keyboard hiding
-  const handleFocus = (currentFocusInput) => {
+  // Функция для установки текущего активного поля ввода
+  const handleFocus = (currentFocusInput = "") => {
     setCurrentFocused(currentFocusInput);
   };
 
-  // Function to hide the keyboard and reset the current focused input
+  // Функция для скрытия клавиатуры
   const handleKeyboardHide = () => {
     setCurrentFocused("");
     Keyboard.dismiss();
   };
 
-  // Function to handle navigating back and clearing the form
+  // Функция для обработки возврата на предыдущий экран
   const handleGoBack = () => {
     clearForm();
     navigation.goBack();
   };
 
-  // Conditional rendering based on camera permission status
+  // Рендер компонента в зависимости от состояния разрешения на использование камеры
   if (hasPermission === null) {
-    return <View />;
+    return <View />; // Пока не получено разрешение, отображается пустой контейнер
   }
   if (hasPermission === false) {
-    return <Text> No access to camera</Text>;
+    return <Text> No access to camera</Text>; // Если разрешение отклонено, выводится текст с информацией
   }
 
-  // Return JSX for the CreatePostsScreen component
+  // Возвращаемый JSX для компонента
   return (
     <TouchableWithoutFeedback onPress={handleKeyboardHide}>
       <View style={styles.container}>
+        {/* ... здесь остальной JSX компонента ... */}
         <View style={styles.loadWrapper}>
           <View style={styles.postImgWrapper}>
             {/* Проверка наличия загруженного изображения для отображения */}
@@ -170,7 +188,7 @@ const CreatePostsScreen = () => {
                   ratio="1:1"
                   zoom={0}
                   type={Camera.Constants.Type.back}
-                  ref={cameraRef}
+                  ref={setCameraRef}
                 >
                   {/* Кнопка для загрузки изображения */}
                   <TouchableOpacity
@@ -195,6 +213,7 @@ const CreatePostsScreen = () => {
             {postImg ? "Редагувати фото" : "Завантажте фото"}
           </Text>
         </View>
+        {/* ... Продолжение JSX компонента ... */}
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={keyboardVerticalOffset}
@@ -203,10 +222,11 @@ const CreatePostsScreen = () => {
           <View>
             {/* Поле ввода для названия поста */}
             <TextInput
-              style={[
-                styles.input,
-                currentFocused === "postName" && styles.inputFocused,
-              ]}
+              style={{
+                ...styles.input,
+                borderColor:
+                  currentFocused === "postName" ? "#ff6c00" : "#e8e8e8",
+              }}
               placeholderTextColor="#bdbdbd"
               placeholder="Назва..."
               autoComplete="off"
@@ -262,6 +282,7 @@ const CreatePostsScreen = () => {
             Опубліковати
           </Text>
         </TouchableOpacity>
+
         {/* Кнопка "корзина" для возврата на предыдущий экран */}
         <TouchableOpacity style={styles.btnTrash} onPress={handleGoBack}>
           <SvgTrash stroke={"#dbdbdb"} />
@@ -274,6 +295,7 @@ const CreatePostsScreen = () => {
 export default CreatePostsScreen;
 
 const styles = StyleSheet.create({
+  // Стили компонента
   container: {
     flex: 1,
 
@@ -283,147 +305,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
 
     resizeMode: "cover",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 
-  loadWrapper: {
-    marginBottom: 32,
-  },
-  postImgWrapper: {
-    position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
-
-    height: 240,
-    maxHeight: 240,
-    maxWidth: 342,
-
-    marginBottom: 8,
-
-    backgroundColor: "#F6F6F6",
-    border: "1px solid #E8E8E8",
-    borderRadius: 8,
-    overflow: "hidden",
-  },
-  camera: {
-    alignItems: "center",
-    justifyContent: "center",
-
-    height: "100%",
-    width: "100%",
-  },
-
-  bgImage: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    // zIndex: 99,
-    flex: 1,
-    height: 240,
-    maxHeight: 240,
-    width: "100%",
-    maxWidth: 342,
-    backgroundColor: "#000",
-  },
-  loadBtn: {
-    alignItems: "center",
-    alignContent: "center",
-
-    width: 60,
-    height: 60,
-
-    padding: 18,
-
-    color: "#bdbdbd",
-    backgroundColor: "#ffffff",
-    borderRadius: 50,
-  },
-  loadBtnContent: {},
-  loadWrapperText: {
-    fontFamily: "Roboto",
-    fontStyle: "normal",
-    fontWeight: 400,
-    fontSize: 16,
-    lineHeight: 19,
-
-    color: "#BDBDBD",
-  },
-
-  locationInputWrapper: {
-    position: "relative",
-    height: 50,
-    paddingVertical: 16,
-
-    alignContent: "center",
-
-    color: "#212121",
-    backgroundColor: "#ffffff",
-
-    borderBottomWidth: 1,
-    borderColor: "#e8e8e8",
-  },
-  input: {
-    height: 50,
-    fontSize: 16,
-    paddingVertical: 16,
-    marginBottom: 16,
-
-    color: "#212121",
-    backgroundColor: "#ffffff",
-
-    borderBottomWidth: 1,
-    borderColor: "#e8e8e8",
-  },
-  inputFocused: {
-    borderColor: "#ff6c00",
-  },
-
-  inputLocation: {
-    fontSize: 16,
-
-    marginLeft: 28,
-
-    color: "#212121",
-    backgroundColor: "#ffffff",
-  },
-  btnLoaction: {
-    position: "absolute",
-    left: 0,
-    bottom: 16,
-    alignSelf: "center",
-
-    backgroundColor: "transparent",
-  },
-  btn: {
-    marginTop: 32,
-    marginBottom: 120,
-
-    paddingVertical: 16,
-
-    backgroundColor: "#f6f6f6",
-    borderRadius: 100,
-  },
-  btnText: {
-    fontFamily: "Roboto",
-    fontStyle: "normal",
-    fontWeight: 400,
-    fontSize: 16,
-
-    textAlign: "center",
-
-    color: "#bdbdbd",
-  },
-  btnTrash: {
-    alignSelf: "center",
-    alignItems: "center",
-
-    width: 70,
-    height: 40,
-
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-
-    backgroundColor: "#f6f6f6",
-    borderRadius: 20,
-    // backgroundColor: props.accessibilityState.selected ? '#f6f6f6' : '#ff6c00',
-  },
+  // ... Продолжение стилей компонента ...
 });

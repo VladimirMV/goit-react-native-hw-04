@@ -17,11 +17,11 @@ import {
 ;
 import backgroundImg from '../assets/img/background.jpg';
 import { AntDesign } from '@expo/vector-icons';
-
+import { useNavigation } from '@react-navigation/native';
 
 
 const RegistrationScreen = () => {
-
+  const navigation = useNavigation();
   const [avatar, setAvatar] = useState(null);
   const [login, setLogin] = useState('');
   const [email, setEmail] = useState('');
@@ -43,6 +43,7 @@ const RegistrationScreen = () => {
     console.log({ login, email, password, avatar });
 
     handleKeyboardHide();
+    navigation.navigate('Home', { user: { login, email, password } });
     clearUserForm();
   };
 
@@ -135,7 +136,7 @@ const RegistrationScreen = () => {
                 <TouchableOpacity style={styles.btn} onPress={onSubmitUserRegister}>
                   <Text style={styles.btnText}>Зареєструватися</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.link}>
+                <TouchableOpacity style={styles.link} onPress={() => navigation.navigate('Login')}>
                   <Text style={styles.linkText}>
                     Вже є акаунт? <Text style={styles.linkTextUnderline}>Увійти</Text>
                   </Text>

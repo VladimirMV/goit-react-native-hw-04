@@ -10,7 +10,7 @@ import SvgArrowLeft from "../assets/svg/SvgArrowLeft";
 import SvgLogOut from "../assets/svg/SvgLogOut";
 
 import SvgGrid from "../assets/svg/SvgGrid";
-import SvgPlus from "../assets/svg/SvgPlus";
+import SvgNew from "../assets/svg/SvgNew";
 import SvgUser from "../assets/svg/SvgUser";
 import { TouchableOpacity } from "react-native";
 
@@ -20,23 +20,26 @@ const Home = () => {
   console.log("home сработал");
   return (
     <ButtomTabs.Navigator
+      // Настройки для всей нижней панели
       screenOptions={() => ({
-        tabBarStyle: {
-          height: 64,
-          paddingTop: 10,
-          paddingBottom: 20,
-
-          alignItems: "center",
-          alignContent: "center",
-          justifyContent: "center",
-        },
+        tabBarActiveTintColor: "#ff6c00",
+        tabBarInactiveTintColor: "#212121",
+        tabBarShowLabel: false,
+        tabBarStyle: [
+          {
+            display: "flex",
+            height: 64,
+            paddingTop: 10,
+            paddingBottom: 20,
+            alignItems: "center",
+            alignContent: "center",
+            justifyContent: "center",
+          },
+          null,
+        ],
       })}
-      tabBarOptions={{
-        showLabel: false,
-        activeTintColor: "#ff6c00",
-        inactiveTintColor: "#212121",
-      }}
     >
+      {/* Первый экран - "Posts" */}
       <ButtomTabs.Screen
         name="Posts"
         component={PostScreen}
@@ -58,6 +61,7 @@ const Home = () => {
           },
         })}
       />
+      {/* Второй экран - "CreatePosts" */}
       <ButtomTabs.Screen
         name="CreatePosts"
         component={CreatePostsScreen}
@@ -83,10 +87,12 @@ const Home = () => {
             />
           ),
           tabBarIcon: () => {
-            return <SvgPlus fill={"#ffffff"} />;
+            return <SvgNew fill={"#ffffff"} focused={"boolean"} />;
           },
         })}
       />
+
+      {/* Третий экран - "Profile" */}
       <ButtomTabs.Screen
         name="Profile"
         component={ProfileScreen}
@@ -121,11 +127,6 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  // },
   arrowLeft: {
     marginLeft: 16,
     marginRight: 42,
@@ -137,13 +138,12 @@ const styles = StyleSheet.create({
     height: 24,
     marginRight: 60,
     marginRight: 16,
-    // paddingHorizontal: 16,
     paddingVertical: 10,
   },
   btnTab: {
     alignSelf: "center",
     marginRight: 30,
-    width: 40,
+    width: 70,
     height: 40,
 
     paddingVertical: 8,
@@ -152,19 +152,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 20,
   },
-  // btnActiveTab: {
-  //   alignSelf: 'center',
-  //   marginRight: 30,
-
-  //   width: 70,
-  //   height: 40,
-
-  //   paddingVertical: 8,
-  //   paddingHorizontal: 23,
-
-  //   backgroundColor: '#ff6c00',
-  //   borderRadius: 20,
-  // },
 });
 
 const createPostsOptions = {
@@ -181,7 +168,6 @@ const createPostsOptions = {
     fontWeight: "bold",
     fontSize: 17,
     lineHeight: 22,
-
     textAlign: "center",
   },
 };

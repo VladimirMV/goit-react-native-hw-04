@@ -6,7 +6,6 @@ const PostScreen = () => {
   console.log("PostScreen сработал")
   return (
     <View style={styles.container}>
-      <Text style={{ ...styles.title, marginTop: 22 }}>Публікацїі</Text>
       <View style={styles.avatarWrapper}>
         <Image style={styles.avatarImg} />
         <View>
