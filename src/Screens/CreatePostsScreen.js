@@ -87,7 +87,7 @@ const CreatePostsScreen = () => {
     console.log({ postImg, postName, postAddress, postLocation });
 
     handleKeyboardHide();
-    navigation.navigate("DefaultPosts", {
+    navigation.navigate("MainPosts", {
       postImg,
       postName: postName.trim(),
       postAddress: postAddress.trim(),
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 32,
 
-    backgroundColorbackgroundColor: "#fff",
+    backgroundColor: "#fff",
 
     resizeMode: "cover",
   },
@@ -399,7 +399,6 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 16,
     alignSelf: "center",
-    // backgroundColor: "#ff6c00",
 
     backgroundColor: "transparent",
   },

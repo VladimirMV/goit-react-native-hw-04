@@ -15,15 +15,18 @@ const MainPostsScreen = ({ route }) => {
       postLocation: { latitude: 0, longitude: 0 },
     },
   ]);
-
+  // console.log("route.params", route.params);
+  // useEffect hook to update posts when route.params changes
   useEffect(() => {
     if (!route.params) return;
 
+    // Add the new route params to the existing posts array
     setPosts((prev) => [...prev, route.params]);
   }, [route.params]);
 
   return (
     <View style={styles.container}>
+      {/* Profile section */}
       <View style={styles.avatarWrapper}>
         <Image style={styles.avatarImg} />
         <View>
@@ -31,10 +34,13 @@ const MainPostsScreen = ({ route }) => {
           <Text style={styles.avatarEmail}>email@example.com</Text>
         </View>
       </View>
+
+      {/* FlatList to display the posts */}
       <FlatList
         style={styles.postsWrapper}
         data={posts}
         renderItem={({ item }) =>
+          // Render the PostsItem component only if postName exists
           item.postName && (
             <PostsItem
               postName={item.postName}
@@ -44,8 +50,10 @@ const MainPostsScreen = ({ route }) => {
             />
           )
         }
-        keyExtractor={(item, idx) => idx.toString()}
+        keyExtractor={(item, idx) => idx.toString()} // Use the index as the key for each item
       />
+
+      {/* Additional View for navigation tabs */}
       <View style={styles.navTabs}></View>
     </View>
   );

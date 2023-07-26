@@ -8,28 +8,36 @@ const PostsItem = ({ postImg, postName, postAddress, postLocation }) => {
 
   return (
     <View style={styles.postItem}>
+      {/* Display the post image */}
       <Image style={styles.postImg} source={{ uri: postImg }} />
+
       <Text style={styles.postTitle}>{postName}</Text>
+
       <View style={{ ...styles.postsAdditionWrapper, ...styles.directionRow }}>
+        {/* Button to navigate to the "Comments" screen */}
         <TouchableOpacity
           style={{ ...styles.comment, ...styles.directionRow }}
           onPress={() => navigation.navigate("Comments", { postImg })}
         >
+          {/* SVG icon for comments */}
           <SvgComment />
+
           <Text style={styles.commentText}>Comments</Text>
         </TouchableOpacity>
+
+        {/* Button to navigate to the "Map" screen */}
         <TouchableOpacity
           style={{ ...styles.location, ...styles.directionRow }}
           onPress={() => navigation.navigate("Map", { postLocation })}
         >
           <SvgLocation fill={postLocation ? "#ff6c00" : "transparent"} />
+
           <Text style={styles.locationText}>{postAddress}</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-
 export default PostsItem;
 
 const styles = StyleSheet.create({
