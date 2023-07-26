@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
-  Dimensions,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -31,7 +30,7 @@ const CreatePostsScreen = () => {
   const [postAddress, setPostAddress] = useState("");
   const [postLocation, setPostLocation] = useState(null);
   const [currentFocused, setCurrentFocused] = useState("");
-  const keyboardVerticalOffset = 150;
+  const keyboardVerticalOffset = -150;
 
   // useEffect hook to handle component initialization
   useEffect(() => {
@@ -88,7 +87,7 @@ const CreatePostsScreen = () => {
     console.log({ postImg, postName, postAddress, postLocation });
 
     handleKeyboardHide();
-    navigation.navigate("{PostScreen", {
+    navigation.navigate("DefaultPosts", {
       postImg,
       postName: postName.trim(),
       postAddress: postAddress.trim(),
@@ -150,16 +149,10 @@ const CreatePostsScreen = () => {
                 <Image style={styles.bgImage} source={{ uri: postImg }} />
                 {/* Кнопка для повторной загрузки изображения */}
                 <TouchableOpacity
-                  style={{
-                    ...styles.loadBtn,
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
+                  style={styles.loadBtnOn}
                   onPress={onLoadPostImg}
                 >
-                  <SvgLoadPost
-                    style={styles.loadBtnContent}
-                    fillColor={"#ffffff"}
-                  />
+                  <SvgLoadPost fillColor={"#ffffff"} />
                 </TouchableOpacity>
               </>
             ) : (
@@ -174,18 +167,10 @@ const CreatePostsScreen = () => {
                 >
                   {/* Кнопка для загрузки изображения */}
                   <TouchableOpacity
-                    style={{
-                      ...styles.loadBtn,
-                      backgroundColor: postImg
-                        ? "rgba(255, 255, 255, 0.3)"
-                        : "#ffffff",
-                    }}
+                    style={postImg ? styles.loadBtnOn : styles.loadBtn}
                     onPress={onLoadPostImg}
                   >
-                    <SvgLoadPost
-                      style={styles.loadBtnContent}
-                      fillColor={postImg ? "#ffffff" : "#bdbdbd"}
-                    />
+                    <SvgLoadPost fillColor={postImg ? "#ffffff" : "#bdbdbd"} />
                   </TouchableOpacity>
                 </Camera>
               )
@@ -217,14 +202,19 @@ const CreatePostsScreen = () => {
             />
             {/* Обертка для поля ввода адреса */}
             <View
-              style={{
-                ...styles.locationInputWrapper,
-                borderColor:
-                  currentFocused === "location" ? "#ff6c00" : "#e8e8e8",
-              }}
+              style={[
+                styles.input,
+                currentFocused === "location" && styles.inputFocused,
+              ]}
             >
               {/* Иконка местоположения */}
-              <SvgLocation style={styles.btnLoaction} />
+              <TouchableOpacity
+                style={styles.btnLoaction}
+                onPress={onSubmitPost}
+              >
+                <SvgLocation fill={postLocation ? "#ff6c00" : "transparent"} />
+              </TouchableOpacity>
+
               {/* Поле ввода для адреса */}
               <TextInput
                 style={styles.inputLocation}
@@ -241,30 +231,25 @@ const CreatePostsScreen = () => {
         </KeyboardAvoidingView>
         {/* Кнопка для опубликования поста */}
         <TouchableOpacity
-          style={{
-            ...styles.btn,
-            backgroundColor:
-              !postImg || !postName.trim() || !postLocation
-                ? "#f6f6f6"
-                : "#ff6c00",
-          }}
+          style={[
+            styles.btn,
+            (!postImg || !postName.trim() || !postLocation) && styles.btnOn,
+          ]}
           onPress={onSubmitPost}
         >
           <Text
-            style={{
-              ...styles.btnText,
-              color:
-                !postImg || !postName.trim() || !postLocation
-                  ? "#bdbdbd"
-                  : "#ffffff",
-            }}
+            style={[
+              styles.btnText,
+              (!postImg || !postName.trim() || !postLocation) &&
+                styles.btnTextOn,
+            ]}
           >
             Опубліковати
           </Text>
         </TouchableOpacity>
-        {/* Кнопка "корзина" для возврата на предыдущий экран */}
+        {/* Кнопка "корзина" для удаления */}
         <TouchableOpacity style={styles.btnTrash} onPress={handleGoBack}>
-          <SvgTrash stroke={"#dbdbdb"} />
+          <SvgTrash style={styles.btnSvgTrash} />
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
@@ -276,11 +261,11 @@ export default CreatePostsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
+    justifyContent: "center",
     paddingHorizontal: 16,
     paddingVertical: 32,
 
-    backgroundColor: "#fff",
+    backgroundColorbackgroundColor: "#fff",
 
     resizeMode: "cover",
   },
@@ -316,7 +301,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    // zIndex: 99,
     flex: 1,
     height: 240,
     maxHeight: 240,
@@ -337,7 +321,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 50,
   },
-  loadBtnContent: {},
+  loadBtnOn: {
+    alignItems: "center",
+    alignContent: "center",
+
+    width: 60,
+    height: 60,
+
+    padding: 18,
+
+    color: "#bdbdbd",
+    borderRadius: 50,
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
+  },
+  loadBtnContent: {
+    fillColor: "#ffffff",
+  },
+
   loadWrapperText: {
     fontFamily: "Roboto",
     fontStyle: "normal",
@@ -385,6 +385,7 @@ const styles = StyleSheet.create({
     color: "#212121",
     backgroundColor: "#ffffff",
   },
+
   btnLoaction: {
     position: "absolute",
     left: 0,
@@ -393,14 +394,27 @@ const styles = StyleSheet.create({
 
     backgroundColor: "transparent",
   },
+  btnLoactionOn: {
+    position: "absolute",
+    left: 0,
+    bottom: 16,
+    alignSelf: "center",
+    // backgroundColor: "#ff6c00",
+
+    backgroundColor: "transparent",
+  },
+
   btn: {
     marginTop: 32,
     marginBottom: 120,
 
     paddingVertical: 16,
 
-    backgroundColor: "#f6f6f6",
+    backgroundColor: "#ff6c00",
     borderRadius: 100,
+  },
+  btnOn: {
+    backgroundColor: "#f6f6f6",
   },
   btnText: {
     fontFamily: "Roboto",
@@ -409,21 +423,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
 
     textAlign: "center",
-
-    color: "#bdbdbd",
+    color: "#ffffff",
   },
+  btnTextOn: { color: "#bdbdbd" },
+
   btnTrash: {
     alignSelf: "center",
     alignItems: "center",
+    justifyContent: "center",
 
     width: 70,
     height: 40,
 
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 8,
 
     backgroundColor: "#f6f6f6",
     borderRadius: 20,
-    // backgroundColor: props.accessibilityState.selected ? '#f6f6f6' : '#ff6c00',
+  },
+  btnSvgTrash: {
+    stroke: "#dbdbdb",
   },
 });

@@ -28,8 +28,8 @@ const MapScreen = ({ route, navigation }) => {
         initialRegion={{
           // ...location,
 
-          latitude: 48.383022,
-          longitude: 31.1828699,
+          latitude: 50.412625,
+          longitude: 30.526163,
           latitudeDelta: 0.006,
           longitudeDelta: 0.006,
         }}
