@@ -3,7 +3,7 @@ import MainPostsScreen from "../Screens/MainPostsScreen";
 import CommentsScreen from "../Screens/CommentsScreen";
 import MapScreen from "../Screens/MapScreen";
 import { StyleSheet } from "react-native";
-import SvgArrowLeft from "../assets/svg/SvgArrowLeft";
+import { Feather } from "@expo/vector-icons";
 
 const NestedScreen = createStackNavigator();
 
@@ -21,10 +21,12 @@ const PostsScreen = ({ navigation }) => {
           ...screenOptions,
           title: "Коментарі",
           headerLeft: () => (
-            <SvgArrowLeft
+            <Feather
+              name="arrow-left"
+              size={24}
               onPress={() => navigation.goBack()}
               title="Return back"
-              color="#fff"
+              color="#212121"
               style={styles.arrowLeft}
             />
           ),
@@ -37,7 +39,9 @@ const PostsScreen = ({ navigation }) => {
           ...screenOptions,
           title: "Карта",
           headerLeft: () => (
-            <SvgArrowLeft
+            <Feather
+              name="arrow-left"
+              size={24}
               onPress={() => navigation.goBack()}
               title="Return back"
               color="#fff"

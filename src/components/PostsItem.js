@@ -1,5 +1,5 @@
-import SvgLocation from "../assets/svg/SvgLocation";
 import SvgComment from "../assets/svg/SvgComment";
+import { Feather } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -19,8 +19,8 @@ const PostsItem = ({ postImg, postName, postAddress, postLocation }) => {
           style={{ ...styles.comment, ...styles.directionRow }}
           onPress={() => navigation.navigate("Comments", { postImg })}
         >
-          {/* SVG icon for comments */}
-          <SvgComment />
+          {/*  icon for comments */}
+          <Feather name="message-circle" size={24} color={"#BDBDBD"} />
 
           <Text style={styles.commentText}>Comments</Text>
         </TouchableOpacity>
@@ -30,7 +30,11 @@ const PostsItem = ({ postImg, postName, postAddress, postLocation }) => {
           style={{ ...styles.location, ...styles.directionRow }}
           onPress={() => navigation.navigate("Map", { postLocation })}
         >
-          <SvgLocation fill={postLocation ? "#ff6c00" : "transparent"} />
+          <Feather
+            name="map-pin"
+            size={24}
+            color={postLocation ? "#ff6c00" : "transparent"}
+          />
 
           <Text style={styles.locationText}>{postAddress}</Text>
         </TouchableOpacity>

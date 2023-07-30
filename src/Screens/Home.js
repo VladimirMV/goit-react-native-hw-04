@@ -1,15 +1,13 @@
 import React from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import SvgArrowLeft from "../assets/svg/SvgArrowLeft";
-import SvgLogOut from "../assets/svg/SvgLogOut";
-import SvgGrid from "../assets/svg/SvgGrid";
-import SvgNew from "../assets/svg/SvgNew";
-import SvgUser from "../assets/svg/SvgUser";
-import SvgTrash from "../assets/svg/SvgTrash";
+
 import PostScreen from "../Screens/PostsScreen";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
+import { Feather } from "@expo/vector-icons";
+
+import SvgNew from "../assets/svg/SvgNew";
 
 const ButtomTabs = createBottomTabNavigator();
 
@@ -23,8 +21,11 @@ const Home = () => {
           height: 64,
           paddingTop: 10,
           paddingBottom: 20,
+
           alignItems: "center",
+          alignContent: "center",
           justifyContent: "center",
+          headerShown: false,
         },
         tabBarShowLabel: false,
         tabBarActiveTintColor: "#ff6c00",
@@ -36,12 +37,15 @@ const Home = () => {
         name="Posts"
         component={PostScreen}
         options={({ navigation }) => ({
-          title: "Posts",
+          ...postsOptions,
+
           headerRight: () => (
-            <SvgLogOut
+            <Feather
+              name="log-out"
+              size={24}
               onPress={() => navigation.navigate("Login")}
               title="Return back"
-              color="#fff"
+              color="#BDBDBD"
               style={styles.logOut}
             />
           ),
@@ -49,7 +53,14 @@ const Home = () => {
             <TouchableOpacity {...props} style={styles.btnTab} />
           ),
           tabBarIcon: ({ color }) => {
-            return <SvgGrid stroke={color} />;
+            return (
+              <Feather
+                name="grid"
+                size={24}
+                stroke={color}
+                style={styles.btnGrid}
+              />
+            );
           },
         })}
       />
@@ -60,14 +71,16 @@ const Home = () => {
         component={CreatePostsScreen}
         options={({ navigation }) => ({
           tabBarStyle: { display: "none" },
-          title: "Create a post",
+          ...createPostsOptions,
           headerLeft: () => (
-            <SvgArrowLeft
+            <Feather
+              name="arrow-left"
+              size={24}
               onPress={() => {
                 navigation.goBack();
               }}
               title="Return back"
-              color="#fff"
+              headerIconColor="#212121"
               style={styles.arrowLeft}
             />
           ),
@@ -82,9 +95,9 @@ const Home = () => {
           ),
           tabBarIcon: ({ focused }) => {
             return focused ? (
-              <SvgTrash style={styles.btnSvgTrash} />
+              <Feather name="trash-2" style={styles.btnTrash} />
             ) : (
-              <SvgNew fill={"#ffffff"} />
+              <SvgNew fill={"#ffffff"} paddingHorizontal={30} />
             );
           },
         })}
@@ -95,9 +108,12 @@ const Home = () => {
         name="Profile"
         component={ProfileScreen}
         options={({ navigation }) => ({
-          title: "Profile",
+          ...createPostsOptions,
+          // headerShown: false,
           headerLeft: () => (
-            <SvgArrowLeft
+            <Feather
+              name="arrow-left"
+              size={24}
               onPress={() => navigation.navigate("Posts")}
               title="Return back"
               color="#fff"
@@ -114,7 +130,7 @@ const Home = () => {
             />
           ),
           tabBarIcon: ({ focused, color, size }) => {
-            return <SvgUser size={size} fill={color} />;
+            return <Feather name="user" size={size} fill={color} />;
           },
         })}
       />
@@ -127,31 +143,79 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 42,
     paddingHorizontal: 16,
-    paddingVertical: 10,
+    color: "#212121",
+    // paddingVertical: 10,
   },
   logOut: {
     width: 24,
     height: 24,
     marginRight: 16,
-    paddingVertical: 10,
   },
   btnTab: {
     alignSelf: "center",
-    alignItems: "center",
-
     marginRight: 30,
-    width: 70,
+    width: 40,
     height: 40,
+    color: "#212121",
     paddingVertical: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 30,
+
     backgroundColor: "#ffffff",
     borderRadius: 20,
   },
-  btnSvgTrash: {
-    stroke: "#dbdbdb",
+  btnTrash: {
+    color: "#dbdbdb",
     alignSelf: "center",
     alignItems: "center",
   },
+  btnGrig: {
+    color: "#212121",
+  },
+  btnNew: {
+    paddingHorizontal: 22,
+  },
 });
+
+const createPostsOptions = {
+  title: "Створити публікацію",
+  headerStyle: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: "rgba(0, 0, 0, 0.3)",
+    boxShadow: "0px 0.5px 0px rgba(0, 0, 0, 0.3)",
+  },
+  headerTintColor: "#212121",
+  headerIconColor: "#212121",
+
+  headerTitleStyle: {
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: "bold",
+    fontSize: 17,
+    lineHeight: 22,
+    marginLeft: -20,
+    textAlign: "center",
+  },
+};
+
+const postsOptions = {
+  title: "Публікації ",
+  headerStyle: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: "rgba(0, 0, 0, 0.3)",
+    boxShadow: "0px 0.5px 0px rgba(0, 0, 0, 0.3)",
+  },
+  headerTintColor: "#212121",
+  headerTitleStyle: {
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: "bold",
+    fontSize: 17,
+    lineHeight: 22,
+
+    marginLeft: 120,
+
+    textAlign: "center",
+  },
+};
 
 export default Home;

@@ -16,9 +16,8 @@ import {
 
 ;
 import backgroundImg from '../assets/img/background.jpg';
-import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-
+import { Feather } from '@expo/vector-icons';
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
@@ -82,7 +81,7 @@ const RegistrationScreen = () => {
                 style={avatar ? styles.btnAddAvatarLoad : styles.btnAddAvatar}
                 onPress={onLoadAvatar}
               >
-                <AntDesign name="pluscircleo" size={25} color={avatar ? '#e8e8e8' : '#ff6c00'}
+                <Feather name="plus-circle" size={25} color={avatar ? '#e8e8e8' : '#ff6c00'}
                 backgroundColor={'transparent'} fill={'#bdbdbd'}        
                 />
               </TouchableOpacity>

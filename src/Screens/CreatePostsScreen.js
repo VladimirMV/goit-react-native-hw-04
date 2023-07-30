@@ -14,8 +14,8 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 import * as MediaLibrary from "expo-media-library";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
-import SvgTrash from "../assets/svg/SvgTrash";
-import SvgLocation from "../assets/svg/SvgLocation";
+import { Feather } from "@expo/vector-icons";
+
 import SvgLoadPost from "../assets/svg/SvgLoadPost";
 
 const CreatePostsScreen = () => {
@@ -152,7 +152,7 @@ const CreatePostsScreen = () => {
                   style={styles.loadBtnOn}
                   onPress={onLoadPostImg}
                 >
-                  <SvgLoadPost fillColor={"#ffffff"} />
+                  <Feather name="map-pin" size={24} Color={"#ffffff"} />
                 </TouchableOpacity>
               </>
             ) : (
@@ -212,7 +212,11 @@ const CreatePostsScreen = () => {
                 style={styles.btnLoaction}
                 onPress={onSubmitPost}
               >
-                <SvgLocation fill={postLocation ? "#ff6c00" : "transparent"} />
+                <Feather
+                  name="map-pin"
+                  size={24}
+                  color={postLocation ? "#ff6c00" : "transparent"}
+                />
               </TouchableOpacity>
 
               {/* Поле ввода для адреса */}
@@ -249,7 +253,7 @@ const CreatePostsScreen = () => {
         </TouchableOpacity>
         {/* Кнопка "корзина" для удаления */}
         <TouchableOpacity style={styles.btnTrash} onPress={handleGoBack}>
-          <SvgTrash style={styles.btnSvgTrash} />
+          <Feather name="trash-2" style={styles.btnTrashIcon} size={24} />
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
@@ -433,14 +437,16 @@ const styles = StyleSheet.create({
 
     width: 70,
     height: 40,
-
-    paddingVertical: 12,
+    color: "#dbdbdb",
+    paddingVertical: 8,
     paddingHorizontal: 8,
 
     backgroundColor: "#f6f6f6",
     borderRadius: 20,
   },
-  btnSvgTrash: {
-    stroke: "#dbdbdb",
+  btnTrashIcon: {
+    color: "#bdbdbd",
+    alignSelf: "center",
+    alignItems: "center",
   },
 });
