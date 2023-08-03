@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import PostScreen from "../Screens/PostsScreen";
+import PostScreen from "../navigation/PostsNavigator";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import { Feather } from "@expo/vector-icons";
@@ -11,11 +11,11 @@ import SvgNew from "../assets/svg/SvgNew";
 
 const ButtomTabs = createBottomTabNavigator();
 
-const Home = () => {
+const BottomNavigator = () => {
   return (
     <ButtomTabs.Navigator
       // Settings for the entire bottom tab bar
-      id="home"
+      id="BottomNavigator"
       screenOptions={{
         tabBarStyle: {
           height: 64,
@@ -38,7 +38,8 @@ const Home = () => {
         component={PostScreen}
         options={({ navigation }) => ({
           ...postsOptions,
-
+          tabBarActiveTintColor: "#FF6C00",
+          tabBarInactiveTintColor: "#212121",
           headerRight: () => (
             <Feather
               name="log-out"
@@ -52,12 +53,12 @@ const Home = () => {
           tabBarButton: (props) => (
             <TouchableOpacity {...props} style={styles.btnTab} />
           ),
-          tabBarIcon: ({ color }) => {
+          tabBarIcon: ({ focused, color }) => {
             return (
               <Feather
                 name="grid"
                 size={24}
-                stroke={color}
+                color={focused ? "#FF6C00" : "#212121"}
                 style={styles.btnGrid}
               />
             );
@@ -72,6 +73,8 @@ const Home = () => {
         options={({ navigation }) => ({
           tabBarStyle: { display: "none" },
           ...createPostsOptions,
+          tabBarActiveTintColor: "#FF6C00",
+          tabBarInactiveTintColor: "#212121",
           headerLeft: () => (
             <Feather
               name="arrow-left"
@@ -89,15 +92,24 @@ const Home = () => {
               {...props}
               style={{
                 ...styles.btnTab,
-                backgroundColor: "#ff6c00",
+                  backgroundColor: "#ff6c00",
+                  
+                
+      
               }}
             />
           ),
           tabBarIcon: ({ focused }) => {
             return focused ? (
-              <Feather name="trash-2" style={styles.btnTrash} />
+              <Feather name="trash-2" style={styles.btnTrash}  />
             ) : (
-              <SvgNew fill={"#ffffff"} paddingHorizontal={30} />
+              // <Feather
+              //   name="plus"
+              //   size={24}
+              //   color={"#FFFFFF"}
+              //   paddingHorizontal={30}
+              // />
+              <SvgNew />
             );
           },
         })}
@@ -109,6 +121,7 @@ const Home = () => {
         component={ProfileScreen}
         options={({ navigation }) => ({
           ...createPostsOptions,
+
           // headerShown: false,
           headerLeft: () => (
             <Feather
@@ -130,7 +143,13 @@ const Home = () => {
             />
           ),
           tabBarIcon: ({ focused, color, size }) => {
-            return <Feather name="user" size={size} fill={color} />;
+            return (
+              <Feather
+                name="user"
+                size={size}
+                color={focused ? "#FF6C00" : "#212121"}
+              />
+            );
           },
         })}
       />
@@ -151,7 +170,7 @@ const styles = StyleSheet.create({
     height: 24,
     marginRight: 16,
   },
-  btnTab: {
+    btnTab: {
     alignSelf: "center",
     marginRight: 30,
     width: 40,
@@ -163,10 +182,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 20,
   },
-  btnTrash: {
+    btnTrash: {
+      alignSelf: "center",
     color: "#dbdbdb",
     alignSelf: "center",
     alignItems: "center",
+    paddingVertical: 16,
   },
   btnGrig: {
     color: "#212121",
@@ -218,4 +239,4 @@ const postsOptions = {
   },
 };
 
-export default Home;
+export default BottomNavigator;

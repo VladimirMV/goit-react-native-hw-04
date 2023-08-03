@@ -42,7 +42,7 @@ const RegistrationScreen = () => {
     console.log({ login, email, password, avatar });
 
     handleKeyboardHide();
-    navigation.navigate('Home', { user: { login, email, password } });
+    navigation.navigate('BottomNavigator', { user: { login, email, password } });
     clearUserForm();
   };
 

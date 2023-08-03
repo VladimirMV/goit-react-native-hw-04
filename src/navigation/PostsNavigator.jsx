@@ -7,13 +7,14 @@ import { Feather } from "@expo/vector-icons";
 
 const NestedScreen = createStackNavigator();
 
-const PostsScreen = ({ navigation }) => {
+const PostNavigator = ({ navigation }) => {
   return (
     <NestedScreen.Navigator
       initialRouteName="MainPosts"
       screenOptions={{ headerShown: false }}
     >
       <NestedScreen.Screen name="MainPosts" component={MainPostsScreen} />
+
       <NestedScreen.Screen
         name="Comments"
         component={CommentsScreen}
@@ -24,7 +25,7 @@ const PostsScreen = ({ navigation }) => {
             <Feather
               name="arrow-left"
               size={24}
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate("MainPosts")}
               title="Return back"
               color="#212121"
               style={styles.arrowLeft}
@@ -42,13 +43,10 @@ const PostsScreen = ({ navigation }) => {
             <Feather
               name="arrow-left"
               size={24}
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate("MainPosts")}
               title="Return back"
-              color="#fff"
-              style={{
-                ...styles.arrowLeft,
-                marginRight: 90,
-              }}
+              color="#212121"
+              style={styles.arrowLeft}
             />
           ),
         }}
@@ -57,7 +55,7 @@ const PostsScreen = ({ navigation }) => {
   );
 };
 
-export default PostsScreen;
+export default PostNavigator;
 
 const styles = StyleSheet.create({
   container: {

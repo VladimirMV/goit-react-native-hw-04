@@ -34,7 +34,7 @@ const LoginScreen = () => {
     console.log({ email, password });
 
       handleKeyboardHide();
-       navigation.navigate("Home", { user: { email, password } });
+       navigation.navigate("BottomNavigator", { user: { email, password } });
     clearUserForm();
   };
   const handleFocus = (currentFocusInput = '') => {

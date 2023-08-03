@@ -152,7 +152,8 @@ const CreatePostsScreen = () => {
                   style={styles.loadBtnOn}
                   onPress={onLoadPostImg}
                 >
-                  <Feather name="map-pin" size={24} Color={"#ffffff"} />
+                  <SvgLoadPost fillColor={ "#ffffff" } />
+                  {/* <Feather name="map-pin" size={24} Color={"#ffffff"} /> */}
                 </TouchableOpacity>
               </>
             ) : (
@@ -431,6 +432,8 @@ const styles = StyleSheet.create({
   btnTextOn: { color: "#bdbdbd" },
 
   btnTrash: {
+  
+
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
@@ -438,6 +441,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 40,
     color: "#dbdbdb",
+    marginBottom: 34,
     paddingVertical: 8,
     paddingHorizontal: 8,
 

@@ -28,7 +28,8 @@ const MainPostsScreen = ({ route }) => {
     <View style={styles.container}>
       {/* Profile section */}
       <View style={styles.avatarWrapper}>
-        <Image style={styles.avatarImg} />
+        <Image style={styles.avatarImg}
+         source={require("../assets/img/avatar2.png")}/>
         <View>
           <Text style={styles.avatarName}>Natali Romanova</Text>
           <Text style={styles.avatarEmail}>email@example.com</Text>
