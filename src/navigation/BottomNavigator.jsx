@@ -121,8 +121,7 @@ const BottomNavigator = () => {
         component={ProfileScreen}
         options={({ navigation }) => ({
           ...createPostsOptions,
-
-          // headerShown: false,
+          headerShown: false,
           headerLeft: () => (
             <Feather
               name="arrow-left"

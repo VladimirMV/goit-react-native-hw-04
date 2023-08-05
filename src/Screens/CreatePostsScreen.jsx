@@ -216,7 +216,7 @@ const CreatePostsScreen = () => {
                 <Feather
                   name="map-pin"
                   size={24}
-                  color={postLocation ? "#ff6c00" : "transparent"}
+                  color={postLocation ? "#ff6c00" : "#dbdbdb"}
                 />
               </TouchableOpacity>
 
@@ -266,9 +266,10 @@ export default CreatePostsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+   justifyContent: "space-between",
+ 
     paddingHorizontal: 16,
-    paddingVertical: 32,
+    paddingVertical: 12,
 
     backgroundColor: "#fff",
 
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
   },
 
   loadWrapper: {
-    marginBottom: 32,
+    marginBottom: 2,
   },
   postImgWrapper: {
     position: "relative",
@@ -284,11 +285,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
 
     height: 240,
-    maxHeight: 240,
-    maxWidth: 342,
-
     marginBottom: 8,
-
     backgroundColor: "#F6F6F6",
     border: "1px solid #E8E8E8",
     borderRadius: 8,
@@ -310,7 +307,6 @@ const styles = StyleSheet.create({
     height: 240,
     maxHeight: 240,
     width: "100%",
-    maxWidth: 342,
     backgroundColor: "#000",
   },
   loadBtn: {
@@ -349,17 +345,12 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 16,
     lineHeight: 19,
-
     color: "#BDBDBD",
   },
 
   locationInputWrapper: {
     position: "relative",
     height: 50,
-    paddingVertical: 16,
-
-    alignContent: "center",
-
     color: "#212121",
     backgroundColor: "#ffffff",
 
@@ -370,7 +361,7 @@ const styles = StyleSheet.create({
     height: 50,
     fontSize: 16,
     paddingVertical: 16,
-    marginBottom: 16,
+    marginBottom: 8,
 
     color: "#212121",
     backgroundColor: "#ffffff",
@@ -409,11 +400,7 @@ const styles = StyleSheet.create({
   },
 
   btn: {
-    marginTop: 32,
-    marginBottom: 120,
-
     paddingVertical: 16,
-
     backgroundColor: "#ff6c00",
     borderRadius: 100,
   },
@@ -441,9 +428,9 @@ const styles = StyleSheet.create({
     width: 70,
     height: 40,
     color: "#dbdbdb",
-    marginBottom: 34,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
+    // marginBottom: 10,
+    // paddingVertical: 8,
+    // paddingHorizontal: 8,
 
     backgroundColor: "#f6f6f6",
     borderRadius: 20,
