@@ -28,8 +28,8 @@ const LoginScreen = () => {
     setPassword('');
   };
     const onSubmitUserRegister = () => {
-      if (!email.trim() || !password.trim())
-        return console.warn('Заповніть поля');
+      // if (!email.trim() || !password.trim())
+      //   return console.warn('Заповніть поля');
 
     console.log({ email, password });
 

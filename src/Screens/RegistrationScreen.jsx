@@ -37,7 +37,7 @@ const RegistrationScreen = () => {
   };
 
   const onSubmitUserRegister = () => {
-    if (!login || !email || !password) return console.warn('Заповніть поля');
+    // if (!login || !email || !password) return console.warn('Заповніть поля');
 
     console.log({ login, email, password, avatar });
 

@@ -1,14 +1,45 @@
 import { ImageBackground } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
-import { StyleSheet, View, Image, Text } from 'react-native';
+import { StyleSheet, View, Image, Text, FlatList } from 'react-native';
 import backgroundImg from '../assets/img/background.jpg';
 import { TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
+import PostsItem from "../components/PostsItem";
+import {useEffect, useState } from 'react';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ route }) => {
   const [avatar, setAvatar] = useState(null);
+   const [posts, setPosts] = useState([
+    {
+      id: "nbnvbc47hth",
+      postImg: 'https://vjoy.cc/wp-content/uploads/2019/10/665x495_0xac120003_3834654781562610948.jpg',
+      postName: "Test post",
+      postAddress: "Kiev, Ukraine",
+      postLocation: { latitude: 0, longitude: 0 },
+     },
+      {
+      id: "nbnvbc47htgdgfh",
+      postImg: 'https://vjoy.cc/wp-content/uploads/2019/10/1547368009_2.jpg',
+      postName: "Test post",
+      postAddress: "Kiev, Ukraine",
+      postLocation: { latitude: 0, longitude: 0 },
+     },
+      {
+      id: "nbnvbc47htgdgfhgfhfhh",
+      postImg: 'https://vjoy.cc/wp-content/uploads/2019/10/great-smoky-mountains-np-37-cades-cove.jpg',
+      postName: "Test post",
+      postAddress: "Kiev, Ukraine",
+      postLocation: { latitude: 0, longitude: 0 },
+    },
+   ]);
+//   console.log(route.params);
+// useEffect(() => {
+//     if (!route.params) return;
 
+//     // Add the new route params to the existing posts array
+//     setPosts((prev) => [...prev, route.params]);
+//   }, [route.params]);
+ console.log("posts",posts);
   const onLoadAvatar = async () => {
     const avatarImg = await DocumentPicker.getDocumentAsync({
       type: 'image/*',
@@ -36,9 +67,31 @@ const ProfileScreen = () => {
                 />
             </TouchableOpacity>
           </View>
+          <View>
           <Text style={{ ...styles.title, marginTop: 92 }}>Name</Text>
         </View>
-      </View>
+          {/* FlatList to display the posts */}
+            <FlatList
+              style={styles.postsWrapper}
+              data={posts}
+              renderItem={({ item }) =>
+                // Render the PostsItem component only if postName exists
+                item.postName && (
+                  <PostsItem
+                    postName={item.postName}
+                    postImg={item.postImg}
+                    postAddress={item.postAddress}
+                    postLocation={item.postLocation}
+                  />
+                )
+                  }
+                  keyExtractor={(item, idx) => idx.toString()} // Use the index as the key for each item
+             />
+
+       {/* Additional View for navigation tabs */}
+        <View style={styles.navTabs}></View>
+        </View>
+         </View>
     </ImageBackground>
   );
 };
@@ -47,17 +100,18 @@ export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     // paddingHorizontal: 16,
-    // paddingVertical: 32,
+    //  paddingVertical: 32,
     // backgroundColor: '#fff',
+    // justifyContent: "flex-end"
   },
 
   bgContainer: {
    
-    resizeMode: 'cover',
-    justifyContent: 'center',
-    
+    flex: 1,
+    width: '100%',
+    // justifyContent: "flex-start"
   },
 
   contentWrapper: {
@@ -65,12 +119,15 @@ const styles = StyleSheet.create({
 
     width: '100%',
     height: '100%',
-    marginTop: 247,
-
+    marginTop: 120,
     backgroundColor: '#fff',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
+  postsWrapper: {
+    marginBottom: 120,
+  },
+
   title: {
     fontFamily: 'Roboto',
     fontStyle: 'normal',

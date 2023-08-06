@@ -79,10 +79,10 @@ const CreatePostsScreen = () => {
 
   // Function to handle post submission
   const onSubmitPost = () => {
-    if (!postImg || !postName || !postLocation) {
-      console.warn("Upload a photo and all the fields");
-      return;
-    }
+    // if (!postImg || !postName || !postLocation) {
+    //   console.warn("Upload a photo and all the fields");
+    //   return;
+    // }
 
     console.log({ postImg, postName, postAddress, postLocation });
 

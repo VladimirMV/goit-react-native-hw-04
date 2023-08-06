@@ -39,7 +39,7 @@ const formatDate = (date) => {
 
   
   const handleAddComment = () => {
-    if (!commentText.trim()) return console.warn('Будь ласка напишіть коментар');
+    // if (!commentText.trim()) return console.warn('Будь ласка напишіть коментар');
     const data = {
       autorAvatar: '',
       comment: commentText,
