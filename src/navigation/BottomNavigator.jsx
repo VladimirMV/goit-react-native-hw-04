@@ -112,7 +112,7 @@ const BottomNavigator = () => {
       />
 
       <Tabs.Screen
-        name="Створити публікацію"
+        name="Create Posts"
         component={CreatePostsScreen}
               options={{
                   title: "Створити публікацію",
@@ -163,7 +163,7 @@ headerTitleAlign: 'center',
           headerShown: false,
             title: false,
             headerTitleAlign: 'center',
-            tabBarStyle: { display: "none" },
+            // tabBarStyle: { display: "none" },
 
           // headerRight: () => (
           //   //  <TouchableOpacity onPress={signOut}>
