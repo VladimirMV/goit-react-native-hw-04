@@ -1,6 +1,6 @@
-import { ImageBackground } from 'react-native';
+import { ImageBackground,StatusBar } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
-import { StyleSheet, View, Image, Text, FlatList } from 'react-native';
+import { StyleSheet, View, Image, Text, FlatList,ScrollView, } from 'react-native';
 import backgroundImg from '../assets/img/background.jpg';
 import { TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
@@ -39,7 +39,7 @@ const ProfileScreen = ({ route }) => {
 //     // Add the new route params to the existing posts array
 //     setPosts((prev) => [...prev, route.params]);
 //   }, [route.params]);
- console.log("posts",posts);
+//  console.log("posts",posts);
   const onLoadAvatar = async () => {
     const avatarImg = await DocumentPicker.getDocumentAsync({
       type: 'image/*',
@@ -52,8 +52,15 @@ const ProfileScreen = ({ route }) => {
 
   return (
     <ImageBackground source={backgroundImg} style={styles.bgContainer}>
+  
       <View style={styles.container}>
-        <View style={styles.contentWrapper}>
+       
+        <ScrollView showsVerticalScrollIndicator={false}>
+           
+          <View style={styles.contentWrapper}>
+            {/* <TouchableOpacity onPress={signOut}> */}
+                <Feather name="log-out" size={24} color="#BDBDBD" marginLeft={320} marginTop={22} />
+           {/* </TouchableOpacity> */}
           <View style={styles.avatarWrapper}>
             <Image style={styles.avatar}
               // source={avatar} />
@@ -71,9 +78,12 @@ const ProfileScreen = ({ route }) => {
           <Text style={{ ...styles.title, marginTop: 92 }}>Name</Text>
         </View>
           {/* FlatList to display the posts */}
+              <StatusBar hidden />
             <FlatList
               style={styles.postsWrapper}
               data={posts}
+              scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
               renderItem={({ item }) =>
                 // Render the PostsItem component only if postName exists
                 item.postName && (
@@ -90,7 +100,8 @@ const ProfileScreen = ({ route }) => {
 
        {/* Additional View for navigation tabs */}
         <View style={styles.navTabs}></View>
-        </View>
+          </View>
+        </ScrollView>
          </View>
     </ImageBackground>
   );

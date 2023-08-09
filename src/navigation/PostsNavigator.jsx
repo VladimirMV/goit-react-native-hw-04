@@ -20,6 +20,9 @@ const PostNavigator = ({ navigation }) => {
         component={CommentsScreen}
         options={{
           ...screenOptions,
+         headerTitleAlign: 'center',
+         tabBarStyle: { display: "none" },
+         marginLeft:6,
           title: "Коментарі",
           headerLeft: () => (
             <Feather
@@ -29,6 +32,7 @@ const PostNavigator = ({ navigation }) => {
               title="Return back"
               color="#212121"
               style={styles.arrowLeft}
+              
             />
           ),
         }}
@@ -38,6 +42,7 @@ const PostNavigator = ({ navigation }) => {
         component={MapScreen}
         options={{
           ...screenOptions,
+          headerTitleAlign: 'center',
           title: "Карта",
           headerLeft: () => (
             <Feather
@@ -64,7 +69,7 @@ const styles = StyleSheet.create({
   },
   arrowLeft: {
     marginLeft: 16,
-    marginRight: 76,
+    marginRight: 0,
     paddingHorizontal: 16,
     paddingVertical: 10,
   },

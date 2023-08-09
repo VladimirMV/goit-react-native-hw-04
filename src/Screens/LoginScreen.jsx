@@ -45,7 +45,7 @@ const LoginScreen = () => {
     setCurrentFocused('');
     Keyboard.dismiss();
   };
-console.log("логин  1 сработал")
+// console.log("логин  1 сработал")
   return (
      <ImageBackground source={backgroundImg} style={styles.bgContainer}>
      <TouchableWithoutFeedback onPress={handleKeyboardHide}> 

@@ -17,26 +17,35 @@ const formatDate = (date) => {
     locale: en,
   });
   };
-  console.log(formatDate(new Date()));
+  // console.log(formatDate(new Date()));
   const [commentText, setCommentText] = useState('');
-  const [comments, setComment] = useState([
-    {
-      autorAvatar: '',
-      comment: 'Хорошая погода',
-      date: formatDate(new Date()),
-    },
- 
-  ]);
+  const [comments, setComments] = useState([]);
+  const [allComments, setAllComments] = useState([]);
+  const [commentsCount, setCommentsCount] = useState(0);
+
 
   useEffect(() => {
+    const initialComments = [
+      {
+        autorAvatar: '',
+        comment: 'Хорошая погода',
+        date: formatDate(new Date()),
+      },
+    ];
+
+    setComments(initialComments);
+
     if (isFocused) {
       navigation?.getParent('BottomNavigator')?.setOptions({
         tabBarStyle: { display: 'none' },
         headerShown: false,
       });
     }
-  }, []);
+  }, [isFocused]);
 
+  useEffect(() => {
+    navigation.setParams({ commentsCount: commentsCount });
+  }, [commentsCount]);
   
   const handleAddComment = () => {
     // if (!commentText.trim()) return console.warn('Будь ласка напишіть коментар');
@@ -46,7 +55,7 @@ const formatDate = (date) => {
       date: formatDate(new Date()),
     };
 
-    setComment(prev => [...prev, data]);
+    setComments(prev => [...prev, data]);
     handleKeyboardHide();
     setCommentText('');
   };

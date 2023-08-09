@@ -1,6 +1,6 @@
 import { FlatList, Image } from "react-native";
 import { StyleSheet } from "react-native";
-import { Text, View } from "react-native";
+import { Text, View,  ScrollView,  } from "react-native";
 
 import { useEffect, useState } from "react";
 import PostsItem from "../components/PostsItem";
@@ -40,6 +40,7 @@ const MainPostsScreen = ({ route }) => {
       <FlatList
         style={styles.postsWrapper}
         data={posts}
+         showsVerticalScrollIndicator={false}
         renderItem={({ item }) =>
           // Render the PostsItem component only if postName exists
           item.postName && (
@@ -55,7 +56,7 @@ const MainPostsScreen = ({ route }) => {
       />
 
       {/* Additional View for navigation tabs */}
-      <View style={styles.navTabs}></View>
+      {/* <View style={styles.navTabs}></View> */}
     </View>
   );
 };

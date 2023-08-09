@@ -12,7 +12,7 @@ const MapScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     if (isFocused) {
-      navigation?.getParent("home")?.setOptions({
+      navigation?.getParent('BottomNavigator')?.setOptions({
         tabBarStyle: { display: "none" },
         headerShown: false,
       });

@@ -33,7 +33,7 @@ const PostsItem = ({ postImg, postName, postAddress, postLocation }) => {
           <Feather
             name="map-pin"
             size={24}
-            color={postLocation ? "#ff6c00" : "transparent"}
+            color={postLocation ? "#ff6c00" : "#bdbdbd"}
           />
 
           <Text style={styles.locationText}>{postAddress}</Text>
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   postImg: {
     height: 240,
-    maxWidth: 343,
+    
 
     marginBottom: 8,
 
