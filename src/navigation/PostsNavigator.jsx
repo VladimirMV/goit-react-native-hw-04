@@ -8,6 +8,7 @@ import { Feather } from "@expo/vector-icons";
 const NestedScreen = createStackNavigator();
 
 const PostNavigator = ({ navigation }) => {
+ 
   return (
     <NestedScreen.Navigator
       initialRouteName="MainPosts"
@@ -28,7 +29,8 @@ const PostNavigator = ({ navigation }) => {
             <Feather
               name="arrow-left"
               size={24}
-              onPress={() => navigation.navigate("MainPosts")}
+              // onPress={() => navigation.navigate("MainPosts")}
+              onPress={() => navigation.goBack()}
               title="Return back"
               color="#212121"
               style={styles.arrowLeft}

@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { StyleSheet } from 'react-native';
+import { authSignUpUser } from '../redux/auth/authOperations';
 import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import {
   View,
   ImageBackground,
@@ -18,9 +21,13 @@ import {
 import backgroundImg from '../assets/img/background.jpg';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
+import { authStateChange } from '../redux/auth/authSlice';
+import { getStorage } from 'firebase/storage';
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const [avatar, setAvatar] = useState(null);
   const [login, setLogin] = useState('');
   const [email, setEmail] = useState('');
@@ -31,22 +38,94 @@ const RegistrationScreen = () => {
   const keyboardVerticalOffset = -160;
   
   const clearUserForm = () => {
-    setLogin('');
-    setEmail('');
-    setPassword('');
+    setAvatar(null);
+    setLogin(null);
+    setEmail(null);
+    setPassword(null);
   };
 
-  const onSubmitUserRegister = () => {
+  const onSubmitUserRegister = async() => {
     // if (!login || !email || !password) return console.warn('Заповніть поля');
 
-    console.log({ login, email, password, avatar });
+    // console.log({ login, email, password, avatar });
 
-    handleKeyboardHide();
-    navigation.navigate('BottomNavigator', { user: { login, email, password } });
-    clearUserForm();
+  //   handleKeyboardHide();
+  //   navigation.navigate('BottomNavigator', { user: { login, email, password } });
+  //   clearUserForm();
+  // };
+
+   
+  // const onLoadAvatar = async () => {
+  //   const avatarImg = await DocumentPicker.getDocumentAsync({
+  //     type: 'image/*',
+  //   });
+
+  //   if (avatarImg.type === 'cancel') return setAvatar(null);
+
+  //   setAvatar(avatarImg);
+  // };
+    
+      const photo = avatar
+      ? await uploadImageToServer(avatar, 'avatars')
+      : 'https://firebasestorage.googleapis.com/v0/b/first-react-native-proje-98226.appspot.com/o/userAvatars%2FDefault_pfp.svg.png?alt=media&token=7cafd3a4-f9a4-40f2-9115-9067f5a15f57';
+
+    dispatch(authSignUpUser({ photo, login, email, password })).then(data => {
+      if (data === undefined || !data.uid) {
+        alert(`Реєстрацію не виконано!`);
+        return;
+      }
+      dispatch(authStateChange({ stateChange: true }));
+      console.log(data);
+    });
+
+    console.log({ login, email, password, photo });
+
+    // dispatch(authStateChange({ stateChange: true }));
+
+    // navigation.navigate('Home', { user: { login, email, password } });
+    // handleKeyboardHide();
+    // clearUserForm();
   };
 
-   const handleFocus = (currentFocusInput = '') => {
+  const onLoadAvatar = async () => {
+    if (avatar) {
+      setAvatar(null);
+      return;
+    }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setAvatar(result.assets[0].uri);
+    }
+  };
+
+  const uploadImageToServer = async (imageUri, prefixFolder) => {
+    const uniquePostId = Date.now().toString();
+
+    if (imageUri) {
+      try {
+        const response = await fetch(imageUri);
+
+        const file = await response.blob();
+
+        const imageRef = await ref(myStorage, `${prefixFolder}/${uniquePostId}`);
+
+        await uploadBytes(imageRef, file);
+
+        const downloadURL = await getDownloadURL(imageRef);
+
+        return downloadURL;
+      } catch (error) {
+        console.warn('uploadImageToServer: ', error);
+      }
+    }
+  };
+const handleFocus = (currentFocusInput = '') => {
     setCurrentFocused(currentFocusInput);
   };
 
@@ -54,16 +133,6 @@ const RegistrationScreen = () => {
     setCurrentFocused('');
     Keyboard.dismiss();
   };
-  const onLoadAvatar = async () => {
-    const avatarImg = await DocumentPicker.getDocumentAsync({
-      type: 'image/*',
-    });
-
-    if (avatarImg.type === 'cancel') return setAvatar(null);
-
-    setAvatar(avatarImg);
-  };
-
 
   return (
     <ImageBackground source={backgroundImg} style={styles.bgContainer}>

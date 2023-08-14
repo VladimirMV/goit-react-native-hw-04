@@ -123,9 +123,9 @@ const CreatePostsScreen = () => {
   };
 
   // Function to handle navigating back and clearing the form
-  const handleGoBack = () => {
+  const deletePost = () => {
     clearForm();
-    navigation.goBack();
+    // navigation.goBack();
   };
 
   // Conditional rendering based on camera permission status
@@ -150,10 +150,10 @@ const CreatePostsScreen = () => {
                 {/* Кнопка для повторной загрузки изображения */}
                 <TouchableOpacity
                   style={styles.loadBtnOn}
-                  onPress={onLoadPostImg}
+                  // onPress={onLoadPostImg}
+                 onPress={deletePost}
                 >
                   <SvgLoadPost fillColor={ "#ffffff" } />
-                  {/* <Feather name="map-pin" size={24} Color={"#ffffff"} /> */}
                 </TouchableOpacity>
               </>
             ) : (
@@ -253,7 +253,7 @@ const CreatePostsScreen = () => {
           </Text>
         </TouchableOpacity>
         {/* Кнопка "корзина" для удаления */}
-        <TouchableOpacity style={styles.btnTrash} onPress={handleGoBack}>
+        <TouchableOpacity style={styles.btnTrash} onPress={deletePost}>
           <Feather name="trash-2" style={styles.btnTrashIcon} size={24} />
         </TouchableOpacity>
       </View>

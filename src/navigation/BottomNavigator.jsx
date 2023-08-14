@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import PostScreen from "../navigation/PostsNavigator";
+import PostNavigator from "../navigation/PostsNavigator";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import { Feather,Ionicons } from "@expo/vector-icons";
@@ -60,7 +60,7 @@ const BottomNavigator = () => {
     >
       <Tabs.Screen
         name="Posts"
-        component={PostScreen}
+        component={PostNavigator}
         options={{
           title: "Публікації",
           headerStyle: {

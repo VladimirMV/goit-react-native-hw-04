@@ -65,11 +65,12 @@ const formatDate = (date) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handleKeyboardHide}>
+    // <TouchableWithoutFeedback onPress={handleKeyboardHide}>
       <View style={styles.container}>
         <Image style={styles.postImg} source={{ uri: params.postImg }} />
         <FlatList
-          style={styles.commentList}
+        style={styles.commentList}
+        showsVerticalScrollIndicator={false}
           data={comments}
           renderItem={({ item }) => (
             <CommentItem comment={item.comment} date={item.date} autorAvatar={item.autorAvatar} />
@@ -97,7 +98,7 @@ const formatDate = (date) => {
           </View>
         </KeyboardAvoidingView>
       </View>
-    </TouchableWithoutFeedback>
+    // </TouchableWithoutFeedback>
   );
 };
 
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   },
   commentList: {
    
-    maxHeight: 312,
+   flex: 1,
     marginBottom: 28,
   },
   inputCommentWrapper: {},

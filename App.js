@@ -1,13 +1,20 @@
 import React from "react";
-import "react-native-gesture-handler";
+import { Provider } from "react-redux";
+import { store, persistor } from "./src/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { Text } from "react-native";
 import { StyleSheet, View } from "react-native";
 import MainNavigator from "./src/navigation/MainNavigator";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <MainNavigator />
-    </View>
+    <Provider store={store}>
+      <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+        <View style={styles.container}>
+          <MainNavigator />
+        </View>
+      </PersistGate>
+    </Provider>
   );
 }
 

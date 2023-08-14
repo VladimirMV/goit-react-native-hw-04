@@ -1,6 +1,8 @@
 import {useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { authSignInUser } from '../redux/auth/authOperations';
 import {
   View,
   ImageBackground,
@@ -17,20 +19,28 @@ import backgroundImg from '../assets/img/background.jpg';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const [currentFocused, setCurrentFocused] = useState('');
   const [isSecureText, setIsSecureText] = useState(true);
+   const [state, setState] = useState(initialState);
   const keyboardVerticalOffset = -220;
-
+  const initialState = {
+  email: "",
+  password: "",
+  };
   const clearUserForm = () => {
-    setEmail('');
-    setPassword('');
+    setEmail(null);
+    setPassword(null);
   };
     const onSubmitUserRegister = () => {
       // if (!email.trim() || !password.trim())
       //   return console.warn('Заповніть поля');
 
+   dispatch(authSignInUser(email, password));
     console.log({ email, password });
 
       handleKeyboardHide();
