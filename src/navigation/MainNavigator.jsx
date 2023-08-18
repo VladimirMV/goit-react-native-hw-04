@@ -9,26 +9,27 @@ import RegistrationScreen from "../Screens/RegistrationScreen";
 import BottomNavigator from "../navigation/BottomNavigator";
 
    import { authStateChangeUser } from '../redux/auth/authOperations';
-   import { selectStateChange } from '../redux/auth/authSelections';
+   import { selectStateChange } from '../redux/auth/authSelectors';
 
 const Stack = createStackNavigator();
 
 
 
 const MainNavigator = () => {
-
+    const { currentUser } = useSelector((state) => state.auth);
+    console.log("currentUser",currentUser);
 const dispatch = useDispatch();
-const stateChange = useSelector(selectStateChange);
+
 
 // dispatch(authStateChange({ stateChange: true }));
 // const stateChange = false;
-  useEffect(() => {
-    dispatch(authStateChangeUser());
-  }, []);
+//   useEffect(() => {
+//     dispatch(currentUser);
+//   }, []);
     
     return (
         <NavigationContainer>
-            {!stateChange ? (
+            {!currentUser ? (
                 <Stack.Navigator
                     initialRouteName="Login"
                     screenOptions={{ headerShown: false }}

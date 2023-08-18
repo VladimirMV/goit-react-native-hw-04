@@ -7,26 +7,30 @@ import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import { Feather,Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-
+import {useDispatch} from 'react-redux';
+import authOperations from '../redux/auth/authOperations';
+import {useSelector} from 'react-redux';
 const MainStack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 // const navigation = useNavigation();
 
 
-function MyBackButton() {
-  const navigation = useNavigation();
-  return (
-    <TouchableOpacity onPress={() => navigation.goBack()}>
-      <Ionicons name="arrow-back" size={24} color="#212121" />
-    </TouchableOpacity>
-  );
-}
+// function MyBackButton() {
+//   const navigation = useNavigation();
+//   return (
+//     <TouchableOpacity onPress={() => navigation.goBack()}>
+//       <Ionicons name="arrow-back" size={24} color="#212121" />
+//     </TouchableOpacity>
+//   );
+// }
 // const signOut = () => {
 //    const navigation = useNavigation();
 //     navigation.navigate("Login");
 //     // onPress={() => navigation.navigate("Login")};
 //   };
 const BottomNavigator = () => {
+  const dispatch = useDispatch();
+  console.log("BottomNavigator ****************");
   return (
     <Tabs.Navigator
           initialRouteName="BottomNavigator"
@@ -63,17 +67,19 @@ const BottomNavigator = () => {
         component={PostNavigator}
         options={{
           title: "Публікації",
+          
           headerStyle: {
     borderBottomWidth: 0.5,
     borderBottomColor: "rgba(0, 0, 0, 0.3)",
     boxShadow: "0px 0.5px 0px rgba(0, 0, 0, 0.3)",
   },
             headerTintColor: "#212121",
-  headerTitleAlign: 'center',
+          headerTitleAlign: 'center',
+  
   headerTitleStyle: {
     fontFamily: "Roboto",
     fontStyle: "normal",
-    fontWeight: "bold",
+    // fontWeight: "bold",
     fontSize: 17,
     lineHeight: 22,
 
@@ -129,8 +135,8 @@ const BottomNavigator = () => {
 headerTitleAlign: 'center',
   headerTitleStyle: {
     fontFamily: "Roboto",
-    fontStyle: "normal",
-    fontWeight: "bold",
+     fontStyle: "normal",
+    // fontWeight: "bold",
     fontSize: 17,
     lineHeight: 22,
     textAlign: "center",
@@ -145,7 +151,7 @@ headerTitleAlign: 'center',
             );
           },
 
-          headerLeft: () => MyBackButton(),
+          // headerLeft: () => MyBackButton(),
 
           headerStyle: {
             borderBottomColor: "#E5E5E5",

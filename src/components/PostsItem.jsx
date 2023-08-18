@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   postTitle: {
     fontFamily: "Roboto",
-    fontWeight: 500,
+    // fontWeight: 500,
     fontSize: 16,
 
     marginBottom: 8,

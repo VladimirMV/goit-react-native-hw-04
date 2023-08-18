@@ -2,7 +2,8 @@ import {useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
-import { authSignInUser } from '../redux/auth/authOperations';
+import authOperations from '../redux/auth/authOperations';
+import '../firebase/config';
 import {
   View,
   ImageBackground,
@@ -28,10 +29,13 @@ const LoginScreen = () => {
   const [isSecureText, setIsSecureText] = useState(true);
    const [state, setState] = useState(initialState);
   const keyboardVerticalOffset = -220;
+
   const initialState = {
   email: "",
   password: "",
   };
+
+
   const clearUserForm = () => {
     setEmail(null);
     setPassword(null);
@@ -40,7 +44,7 @@ const LoginScreen = () => {
       // if (!email.trim() || !password.trim())
       //   return console.warn('Заповніть поля');
 
-   dispatch(authSignInUser(email, password));
+   dispatch(authOperations.authLogin(email, password));
     console.log({ email, password });
 
       handleKeyboardHide();
@@ -55,7 +59,7 @@ const LoginScreen = () => {
     setCurrentFocused('');
     Keyboard.dismiss();
   };
-// console.log("логин  1 сработал")
+ console.log("логин  1 сработал")
   return (
      <ImageBackground source={backgroundImg} style={styles.bgContainer}>
      <TouchableWithoutFeedback onPress={handleKeyboardHide}> 
@@ -146,7 +150,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Roboto',
     fontStyle: 'normal',
-    fontWeight: 500,
+    // fontWeight: 500,
     fontSize: 30,
     lineHeight: 35,
     textAlign: 'center',

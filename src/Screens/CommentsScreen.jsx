@@ -5,159 +5,238 @@ import { Feather } from "@expo/vector-icons";
 import { useEffect, useState } from 'react';
 import CommentItem from '../components/CommentItem';
 import { Keyboard } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
 import { format } from "date-fns";
 import { en } from "date-fns/locale";
-import Avvvatars from 'avvvatars-react'
+import {useDispatch, useSelector} from 'react-redux';
+import {useRoute} from '@react-navigation/native';
+import postsSelectors from '../redux/posts/postsSelectors';
+import authSelectors from '../redux/auth/authSelectors';
+import postOperation from '../redux/posts/postsOperation';
+import KeyboardContainer from '../components/KeyboardContainer';
 
 const CommentsScreen = ({ navigation, route: { params } }) => {
-  const isFocused = useIsFocused();
+
 const formatDate = (date) => {
   return format(Date.parse(date), "dd MMMM, yyyy | HH:mm:ss", {
     locale: en,
   });
   };
-  // console.log(formatDate(new Date()));
-  const [commentText, setCommentText] = useState('');
-  const [comments, setComments] = useState([]);
-  const [allComments, setAllComments] = useState([]);
-  const [commentsCount, setCommentsCount] = useState(0);
+//   // console.log(formatDate(new Date()));
+//   const [commentText, setCommentText] = useState('');
+//   const [comments, setComments] = useState([]);
+//   const [allComments, setAllComments] = useState([]);
+//   const [commentsCount, setCommentsCount] = useState(0);
 
 
-  useEffect(() => {
-    const initialComments = [
-      {
-        autorAvatar: '',
-        comment: 'Хорошая погода',
-        date: formatDate(new Date()),
-      },
-    ];
+//   useEffect(() => {
+//     const initialComments = [
+//       {
+//         autorAvatar: '',
+//         comment: 'Хорошая погода',
+//         date: formatDate(new Date()),
+//       },
+//     ];
 
-    setComments(initialComments);
+//     setComments(initialComments);
 
-    if (isFocused) {
-      navigation?.getParent('BottomNavigator')?.setOptions({
-        tabBarStyle: { display: 'none' },
-        headerShown: false,
-      });
-    }
-  }, [isFocused]);
+//     if (isFocused) {
+//       navigation?.getParent('BottomNavigator')?.setOptions({
+//         tabBarStyle: { display: 'none' },
+//         headerShown: false,
+//       });
+//     }
+//   }, [isFocused]);
 
-  useEffect(() => {
-    navigation.setParams({ commentsCount: commentsCount });
-  }, [commentsCount]);
+//   useEffect(() => {
+//     navigation.setParams({ commentsCount: commentsCount });
+//   }, [commentsCount]);
   
-  const handleAddComment = () => {
-    // if (!commentText.trim()) return console.warn('Будь ласка напишіть коментар');
-    const data = {
-      autorAvatar: '',
-      comment: commentText,
-      date: formatDate(new Date()),
+//   const handleAddComment = () => {
+//     // if (!commentText.trim()) return console.warn('Будь ласка напишіть коментар');
+//     const data = {
+//       autorAvatar: '',
+//       comment: commentText,
+//       date: formatDate(new Date()),
+//     };
+
+//     setComments(prev => [...prev, data]);
+//     handleKeyboardHide();
+//     setCommentText('');
+//   };
+
+  // const handleKeyboardHide = () => {
+  //   Keyboard.dismiss();
+  // };
+  const [comment, setComment] = useState('');
+  const dispatch = useDispatch();
+  const route = useRoute();
+  const { postId, imgUri } = route.params;
+  const comments = useSelector(postsSelectors.getComments);
+  const sortedComments = [...comments].sort(
+    (a, b) => b.dateForSort - a.dateForSort
+  );
+  console.log('sortedComments::', sortedComments);
+  const { userId } = useSelector(authSelectors.getUser);
+  useEffect(() => {
+    dispatch(postOperation.getAllCommentsByPostId(postId));
+
+    return () => {
+      dispatch(postOperation.getAllPosts());
+      dispatch(postOperation.getOwnPosts());
     };
+  }, [dispatch, postId]);
 
-    setComments(prev => [...prev, data]);
-    handleKeyboardHide();
-    setCommentText('');
-  };
-
-  const handleKeyboardHide = () => {
-    Keyboard.dismiss();
+  const createPost = () => {
+    dispatch(postOperation.addCommentByPostID(postId, comment));
+    setComment('');
   };
 
   return (
     // <TouchableWithoutFeedback onPress={handleKeyboardHide}>
-      <View style={styles.container}>
-        <Image style={styles.postImg} source={{ uri: params.postImg }} />
+      <KeyboardContainer>
+      <View style={s.container}>
         <FlatList
-        style={styles.commentList}
-        showsVerticalScrollIndicator={false}
-          data={comments}
-          renderItem={({ item }) => (
-            <CommentItem comment={item.comment} date={item.date} autorAvatar={item.autorAvatar} />
-          )}
-          keyExtractor={(item, idx) => idx.toString()}
+          style={{paddingHorizontal: 16}}
+          data={sortedComments}
+          ListHeaderComponent={
+            <View style={{paddingVertical: 32}}>
+              <Image
+                style={s.image}
+                source={{uri: imgUri}}
+              />
+            </View>}
+          renderItem={({item}) => {
+            const isOwner = item.authorId === userId;
+            console.log('item::', item);
+            return (
+              <View style={[s.containerItem, {flexDirection: isOwner ? 'row-reverse' : 'row'}]}>
+                <Image
+                  source={{uri: item.userAvatar}}
+                  style={[s.authorAvatar, {[isOwner ? 'marginLeft' : 'marginRight']: 16}]}
+                />
+                <View
+                  style={[s.commentWrapper, {[isOwner ? 'borderTopRightRadius' : 'borderTopLeftRadius']: 0}]}
+                >
+                  <Text style={s.commentAuthor}>{item.comment}</Text>
+                  <Text style={[s.commentDate, {textAlign: isOwner ? 'left' : 'right'}]}>
+                    {item.date}
+                  </Text>
+                </View>
+              </View>
+            );
+          }}
+          ItemSeparatorComponent={() => <View style={{ height: 24 }}/>}
+          ListEmptyComponent={<View style={{
+            height: 50,
+            backgroundColor: '#ffffff',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}><Text>У вас ще не має коментарів</Text></View>}
+          ListFooterComponent={() => <View style={{ height: 30 }}/>}
         />
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardView}
+        <View
+          style={s.containerFooter}
         >
-          <View style={styles.inputCommentWrapper}>
+          <View>
             <TextInput
-              style={styles.commentInput}
+              value={comment}
+              onChangeText={(text) => setComment(text)}
               placeholder="Коментувати..."
-              placeholderTextColor="#bdbdbd"
-              autoComplete="off"
-              value={commentText}
-              onChangeText={setCommentText}
+              placeholderTextColor="#BDBDBD"
+              style={s.commentInput}
             />
-            <TouchableOpacity style={styles.commentBtn} onPress={handleAddComment}>
-              <Feather
+            <TouchableOpacity
+              style={s.iconWrapper}
+              onPress={createPost}
+              activeOpacity={0.7}
+            >
+             <Feather
               name="arrow-up"
-              size={30} style={styles.arrowUp} color = "#FFFFFF"  />
+              size={30}  color = "#FFFFFF"  />
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
+        </View>
       </View>
-    // </TouchableWithoutFeedback>
+    </KeyboardContainer>
   );
-};
-
+}
 export default CommentsScreen;
-
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   container: {
     flex: 1,
-
-    paddingHorizontal: 16,
-    paddingTop: 32,
-
-
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
   },
-  postImg: {
-    height: 240,
+  image: {
     width: '100%',
-    marginBottom: 28,
-
-    backgroundColor: '#f6f6f6',
-
+    height: 240,
     borderRadius: 8,
   },
-  commentList: {
-   
-   flex: 1,
-    marginBottom: 28,
+
+  containerItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
   },
-  inputCommentWrapper: {},
+  authorAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+  },
+  commentWrapper: {
+    flex: 1,
+    padding: 16,
+
+    backgroundColor: ' rgba(0, 0, 0, 0.03)',
+    borderRadius: 16,
+  },
+  commentAuthor: {
+
+    marginBottom: 8,
+
+    // fontFamily: fontFamily.roboto400,
+    fontSize: 13,
+    lineHeight: 18,
+
+    color: '#212121',
+  },
+  commentDate: {
+    // fontFamily: fontFamily.roboto400,
+    fontSize: 10,
+    lineHeight: 12,
+
+    color: '#BDBDBD',
+  },
+
+  containerFooter: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+
+    backgroundColor: '#FFFFFF',
+  },
   commentInput: {
     position: 'relative',
-    width: '100%',
-    height: 50,
 
+    // fontFamily: fontFamily.inter500,
+    height: 50,
     padding: 16,
-   paddingBottom: 16,
-    backgroundColor: '#f6f6f6',
-     marginBottom: 16,
+    paddingRight: 50,
+
+    fontSize: 16,
+    lineHeight: 19,
+
+    backgroundColor: '#F6F6F6',
+    color: '#212121',
+
     borderWidth: 1,
-    borderColor: '#e8e8e8',
+    borderColor: '#E8E8E8',
     borderRadius: 100,
   },
-  commentBtn: {
+  iconWrapper: {
     position: 'absolute',
     right: 8,
-    top: 4,
+    bottom: 8,
 
-    paddingHorizontal: 6,
-    paddingVertical: 6,
-    backgroundColor: '#ff600c',
-
-    borderRadius: 100,
-  },
-
-  arrowUp: {
-    // height: 30,
-    // width: 34,
-
-   
+    width: 34,
+    height: 34,
   },
 });

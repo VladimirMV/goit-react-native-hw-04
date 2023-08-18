@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { StyleSheet } from 'react-native';
 import { authSignUpUser } from '../redux/auth/authOperations';
-import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import {
   View,
@@ -16,119 +15,52 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-
-;
 import backgroundImg from '../assets/img/background.jpg';
+import Avatar from '../components/Avatar';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { authStateChange } from '../redux/auth/authSlice';
+import authOperations from '../redux/auth/authOperations';
 import { getStorage } from 'firebase/storage';
+import {storage} from '../firebase/config';
 
-const RegistrationScreen = () => {
+const initValues = {
+  email: '',
+  password: '',
+  nickname: '',
+};
+const initFocus = { email: false, password: false, nickname: false };
+
+const RegistrationScreen = ( ) => {
   const navigation = useNavigation();
+  const [isSecureText, setIsSecureText] = useState(true);
+  const [values, setValues] = useState(initValues);
+  const [hasFocus, setHasFocus] = useState(initFocus);
+  const [avatarImg, setAvatarImg] = useState('');
+  const [currentFocused, setCurrentFocused] = useState('');
+  const keyboardVerticalOffset = -160;
   const dispatch = useDispatch();
 
-  const [avatar, setAvatar] = useState(null);
-  const [login, setLogin] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const [currentFocused, setCurrentFocused] = useState('');
-  const [isSecureText, setIsSecureText] = useState(true);
-  const keyboardVerticalOffset = -160;
-  
-  const clearUserForm = () => {
-    setAvatar(null);
-    setLogin(null);
-    setEmail(null);
-    setPassword(null);
+   const onChangeText = (value, name) => {
+    setValues(v => ({ ...v, [name]: value }));
   };
-
-  const onSubmitUserRegister = async() => {
-    // if (!login || !email || !password) return console.warn('Заповніть поля');
-
-    // console.log({ login, email, password, avatar });
-
-  //   handleKeyboardHide();
-  //   navigation.navigate('BottomNavigator', { user: { login, email, password } });
-  //   clearUserForm();
-  // };
-
-   
-  // const onLoadAvatar = async () => {
-  //   const avatarImg = await DocumentPicker.getDocumentAsync({
-  //     type: 'image/*',
-  //   });
-
-  //   if (avatarImg.type === 'cancel') return setAvatar(null);
-
-  //   setAvatar(avatarImg);
-  // };
-    
-      const photo = avatar
-      ? await uploadImageToServer(avatar, 'avatars')
-      : 'https://firebasestorage.googleapis.com/v0/b/first-react-native-proje-98226.appspot.com/o/userAvatars%2FDefault_pfp.svg.png?alt=media&token=7cafd3a4-f9a4-40f2-9115-9067f5a15f57';
-
-    dispatch(authSignUpUser({ photo, login, email, password })).then(data => {
-      if (data === undefined || !data.uid) {
-        alert(`Реєстрацію не виконано!`);
-        return;
-      }
-      dispatch(authStateChange({ stateChange: true }));
-      console.log(data);
-    });
-
-    console.log({ login, email, password, photo });
-
-    // dispatch(authStateChange({ stateChange: true }));
-
-    // navigation.navigate('Home', { user: { login, email, password } });
-    // handleKeyboardHide();
-    // clearUserForm();
-  };
-
-  const onLoadAvatar = async () => {
-    if (avatar) {
-      setAvatar(null);
-      return;
-    }
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setAvatar(result.assets[0].uri);
-    }
-  };
-
-  const uploadImageToServer = async (imageUri, prefixFolder) => {
-    const uniquePostId = Date.now().toString();
-
-    if (imageUri) {
-      try {
-        const response = await fetch(imageUri);
-
-        const file = await response.blob();
-
-        const imageRef = await ref(myStorage, `${prefixFolder}/${uniquePostId}`);
-
-        await uploadBytes(imageRef, file);
-
-        const downloadURL = await getDownloadURL(imageRef);
-
-        return downloadURL;
-      } catch (error) {
-        console.warn('uploadImageToServer: ', error);
-      }
-    }
+const onInputFocus = (name) => {
+    setHasFocus(p => ({ ...p, [name]: true }));
   };
 const handleFocus = (currentFocusInput = '') => {
     setCurrentFocused(currentFocusInput);
   };
+  const onInputBlur = (name) => {
+    setHasFocus(p => ({ ...p, [name]: false }));
+  };
 
+  const onSubmitUserRegister = async () => { 
+    
+    dispatch(authOperations.authRegister({...values, photoURL: avatarImg}));
+    setValues(initValues);
+  };
+
+  
   const handleKeyboardHide = () => {
     setCurrentFocused('');
     Keyboard.dismiss();
@@ -144,7 +76,7 @@ const handleFocus = (currentFocusInput = '') => {
             >
       
           <View style={styles.contentWrapper}>
-            <View style={styles.avatarWrapper}>
+            {/* <View style={styles.avatarWrapper}>
               <Image style={styles.avatar} source={avatar} />
               <TouchableOpacity
                 style={avatar ? styles.btnAddAvatarLoad : styles.btnAddAvatar}
@@ -154,18 +86,26 @@ const handleFocus = (currentFocusInput = '') => {
                 backgroundColor={'transparent'} fill={'#bdbdbd'}        
                 />
               </TouchableOpacity>
-            </View> 
+            </View>  */}
+
+          <View style={styles.avatarWrapper}>
+            <View style={styles.avatar}>
+              <Avatar avatarImg={avatarImg} setAvatarImg={setAvatarImg} />
+            </View>
+          </View>
+
             <Text style={styles.title}>Реєстрація</Text>
             
             <TextInput
-              style={[styles.input, currentFocused === 'login' && styles.inputFocused]}
+              style={[styles.input, currentFocused === 'nickname' && styles.inputFocused]}
               placeholder="Логін"
               placeholderTextColor="#bdbdbd"
               autoComplete="username"
               autoCapitalize="none"
-              value={login}
-              onChangeText={setLogin}
-              onFocus={() => handleFocus('login')}
+              value={values.nickname}
+              onChangeText={v => onChangeText(v, 'nickname')}
+              onFocus={() => onInputFocus('nickname')}
+              onBlur={() => onInputBlur('nickname')}
             />
               <TextInput
               style={[styles.input, currentFocused === 'email' && styles.inputFocused]}
@@ -173,9 +113,10 @@ const handleFocus = (currentFocusInput = '') => {
               placeholderTextColor="#bdbdbd"
               autoComplete="email"
               autoCapitalize="none"
-              value={email}
-              onChangeText={setEmail}
-               onFocus={() => handleFocus('email')}
+              value={values.email}
+              onChangeText={v => onChangeText(v, 'email')}
+              onFocus={() => onInputFocus('email')}
+              onBlur={() => onInputBlur('email')}
               />
               <View
               style={styles.passWrapper}
@@ -187,9 +128,10 @@ const handleFocus = (currentFocusInput = '') => {
                 autoComplete="password"
                 autoCapitalize="none"
                 secureTextEntry={isSecureText}
-                value={password}
-                onChangeText={setPassword}
-                  onFocus={() => handleFocus('password')}
+                 value={values.password}
+                onChangeText={v => onChangeText(v, 'password')}
+                onFocus={() => onInputFocus('password')}
+                onBlur={() => onInputBlur('password')}
                 />
                  <TouchableOpacity
                 style={styles.btnPassShow}
@@ -246,7 +188,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Roboto',
     fontStyle: 'normal',
-    fontWeight: 500,
+    // fontWeight: 500,
     fontSize: 30,
     lineHeight: 35,
     textAlign: 'center',
@@ -318,21 +260,33 @@ const styles = StyleSheet.create({
   },
 
   //
+  // avatarWrapper: {
+  //   position: 'absolute',
+  //   top: -60,
+  //   alignSelf: 'center',
+
+  //   width: 120,
+  //   height: 120,
+
+  //   backgroundColor: '#f6f6f6',
+  //   borderRadius: 16,
+  // },
+  // avatar: {
+  //   width: 120,
+  //   height: 120,
+  //   borderRadius: 16,
+  // },
   avatarWrapper: {
     position: 'absolute',
-    top: -60,
-    alignSelf: 'center',
-
-    width: 120,
-    height: 120,
-
-    backgroundColor: '#f6f6f6',
-    borderRadius: 16,
+    top: 0,
+    right: 0,
+    left: 0,
+    height: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 16,
+    position: 'absolute',
   },
   btnAddAvatar: {
     position: 'absolute',

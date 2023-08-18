@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   avatarName: {
     fontFamily: "Roboto",
     fontStyle: "normal",
-    fontWeight: 700,
+    // fontWeight: 700,
     fontSize: 13,
     lineHeight: 15,
 
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   avatarEmail: {
     fontFamily: "Roboto",
     fontStyle: "normal",
-    fontWeight: 400,
+    // fontWeight: 400,
     fontSize: 11,
     lineHeight: 13,
 

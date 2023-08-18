@@ -22,10 +22,9 @@ const CreatePostsScreen = () => {
   // Hooks and state variables for managing the component's behavior
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const cameraRef = useRef(null);
 
-  const [cameraRef, setCameraRef] = useState(null);
   const [hasPermission, setHasPermission] = useState(null);
-  
   const [postImg, setPostImg] = useState("");
   const [postName, setPostName] = useState("");
   const [postAddress, setPostAddress] = useState("");
@@ -35,25 +34,26 @@ const CreatePostsScreen = () => {
 
   // useEffect hook to handle component initialization
   useEffect(() => {
-    setPostImg("");
-    setPostLocation(null);
+    // Function to request camera, media library, and location permissions
+    const getPermissions = async () => {
+      const { status: cameraStatus } =
+        await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
 
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      const { midiaStatus } = await MediaLibrary.requestPermissionsAsync();
-      console.log("midiaStatus", midiaStatus);
-      console.log("status", status);
-      setHasPermission(status === "granted");
-    })();
+      setHasPermission(cameraStatus === "granted");
 
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
+      const { status: locationStatus } =
+        await Location.requestForegroundPermissionsAsync();
+      if (locationStatus !== "granted") {
         console.log("Permission to access location was denied");
       }
-    })();
-  }, []);
+    };
 
+    // Clear the form and get permissions when the component mounts
+    setPostImg("");
+    setPostLocation(null);
+    getPermissions();
+  }, []);
 
   // Function to add image location using Expo Location API
   const addImageLocation = async () => {
@@ -99,21 +99,17 @@ const CreatePostsScreen = () => {
 
   // Function to load the post image from the camera
   const onLoadPostImg = async () => {
-    if (cameraRef) {
+    if (cameraRef.current) {
       try {
-        const { uri } = await cameraRef.takePictureAsync();
-         console.log("uri///////////", uri);
+        const { uri } = await cameraRef.current.takePictureAsync();
         await MediaLibrary.createAssetAsync(uri);
-    
         setPostImg(uri);
       } catch (error) {
-        console.log('Error > ', error.message);
+        console.log("Error > ", error.message);
       }
     }
-
     addImageLocation();
   };
-
 
   // Function to handle input focus and keyboard hiding
   const handleFocus = (currentFocusInput) => {
@@ -154,8 +150,8 @@ const CreatePostsScreen = () => {
                 {/* Кнопка для повторной загрузки изображения */}
                 <TouchableOpacity
                   style={styles.loadBtnOn}
-                   onPress={onLoadPostImg}
-                //  onPress={deletePost}
+                  // onPress={onLoadPostImg}
+                 onPress={deletePost}
                 >
                   <SvgLoadPost fillColor={ "#ffffff" } />
                 </TouchableOpacity>
@@ -168,7 +164,7 @@ const CreatePostsScreen = () => {
                   ratio="1:1"
                   zoom={0}
                   type={Camera.Constants.Type.back}
-                  ref={setCameraRef}
+                  ref={cameraRef}
                 >
                   {/* Кнопка для загрузки изображения */}
                   <TouchableOpacity

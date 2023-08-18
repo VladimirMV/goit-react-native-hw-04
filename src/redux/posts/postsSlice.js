@@ -1,17 +1,29 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  comment: '',
+  posts: [],
+  ownPosts: [],
+  comments: [],
 };
 
-export const postSlice = createSlice({
-  name: 'post',
+export const postsSlice = createSlice({
+  name: "posts",
   initialState,
   reducers: {
-    addComment: (state, { payload }) => ({
-      comment: payload,
+    updatePosts: (state, { payload }) => ({
+      ...state,
+      posts: payload,
     }),
+    updateOwnPosts: (state, { payload }) => ({
+      ...state,
+      ownPosts: payload,
+    }),
+    updateCommentsToPost: (state, { payload }) => ({
+      ...state,
+      comments: payload,
+    }),
+    reset: () => ({ ...initialState }),
   },
 });
 
-export const { addComment } = postSlice.actions;
+export const postsAction = postsSlice.actions;
